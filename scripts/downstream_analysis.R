@@ -411,7 +411,7 @@ for (file_path in all_files) {
 }
 
 
-# Generalized function to generate heatmaps from DA files
+# Function to generate heatmaps from DA files
 generate_all_heatmaps <- function(da_files, counts_matrix, metadata, dataset_name, output_dir) {
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
   
@@ -538,7 +538,7 @@ generate_all_heatmaps <- function(da_files, counts_matrix, metadata, dataset_nam
     outname <- paste0(dataset_name, "_", comparison, ".png")
     png_filename <- file.path(output_dir, outname)
     
-    png(png_filename, width = 1800, height = 1000, res = 600)
+    png(png_filename, width = 4800, height = 3000, res = 600)
     ComplexHeatmap::draw(heatmap_plot)
     dev.off()
     
@@ -559,3 +559,152 @@ ev_files <- grep("ev_", all_files, value = TRUE)
 ensure_dir("DA_results/heatmaps")
 generate_all_heatmaps(dieguez_files, dieguez_complete_uniref_counts, metadata_dieguez, "dieguez", "DA_results/heatmaps")
 generate_all_heatmaps(ev_files, ev_complete_uniref_counts, metadata_ev, "ev", "DA_results/heatmaps")
+
+
+# Add on heatmap for the ones with a lot of genes
+# generate_all_heatmaps_1 <- function(da_files, counts_matrix, metadata, dataset_name, output_dir) {
+#   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
+#   
+#   metadata$condition <- metadata$condition %>%
+#     trimws() %>%
+#     stringr::str_replace_all("\\s{2,}", " ")
+#   
+#   metadata_conditions <- unique(metadata$condition)
+#   
+#   clean_condition <- function(cond_string) {
+#     cond_string %>%
+#       gsub("_", " - ", .) %>%
+#       gsub("\\s{2,}", " ", .) %>%
+#       stringr::str_trim() %>%
+#       stringr::str_replace_all("\\bFl Ar\\b", "Fl-Ar") %>%
+#       stringr::str_replace_all("\\bCI\\b", "CI") %>%
+#       stringr::str_replace_all("\\bCF\\b", "CF") %>%
+#       tools::toTitleCase()
+#   }
+#   
+#   
+#   for (da_file in da_files) {
+#     file_base <- basename(da_file)
+#     comparison <- file_base %>%
+#       gsub("^dieguez_|^ev_", "", .) %>%
+#       gsub("\\.csv$", "", .)
+#     
+#     cat("\nProcessing file:", file_base, "-> Comparison:", comparison, "\n")
+#     
+#     da_data <- readr::read_csv(da_file, show_col_types = FALSE)
+#     significant_taxa <- unique(da_data$Taxon)
+#     sig_counts <- counts_matrix[rownames(counts_matrix) %in% significant_taxa, , drop = FALSE]
+#     
+#     if (nrow(sig_counts) == 0) {
+#       cat("No significant genes found for", comparison, "- Skipping heatmap\n")
+#       next
+#     }
+#     
+#     sig_counts_log <- log2(sig_counts + 1)
+#     sig_counts_scaled <- t(scale(t(sig_counts_log)))
+#     
+#     conditions <- unlist(strsplit(comparison, "_vs_"))
+#     conditions <- lapply(conditions, clean_condition)
+#     conditions <- unlist(conditions)
+#     
+#     if (length(conditions) != 2) {
+#       cat("Invalid comparison format (expected 2 conditions):", comparison, "\n")
+#       next
+#     }
+#     
+#     cat("Extracted Conditions:", conditions[1], "vs", conditions[2], "\n")
+#     cat("Available metadata conditions:\n")
+#     print(metadata_conditions)
+#     
+#     match_condition <- function(cond) {
+#       exact <- metadata_conditions[metadata_conditions == cond]
+#       if (length(exact) > 0) return(exact[1])
+#       fuzzy <- metadata_conditions[agrep(cond, metadata_conditions, ignore.case = TRUE, max.distance = 0.2)]
+#       if (length(fuzzy) > 0) return(fuzzy[1])
+#       return(NA)
+#     }
+#     
+#     condition1 <- match_condition(conditions[1])
+#     condition2 <- match_condition(conditions[2])
+#     
+#     if (is.na(condition1) || is.na(condition2) || condition1 == condition2) {
+#       cat("Could not match both conditions or they are identical:", condition1, condition2, "\n")
+#       next
+#     }
+#     
+#     cat("Final Matched Conditions:", condition1, "vs", condition2, "\n")
+#     
+#     meta_filtered <- metadata %>%
+#       dplyr::filter(condition %in% c(condition1, condition2)) %>%
+#       dplyr::filter(run %in% colnames(sig_counts_scaled)) %>%
+#       dplyr::arrange(condition, host_subject_id)
+#     
+#     if (nrow(meta_filtered) == 0) {
+#       cat("Filtered metadata has 0 rows - Skipping\n")
+#       next
+#     }
+#     
+#     sig_counts_scaled <- sig_counts_scaled[, meta_filtered$run, drop = FALSE]
+#     colnames(sig_counts_scaled) <- meta_filtered$host_subject_id
+#     
+#     # Annotations
+#     unique_hosts <- unique(meta_filtered$host_subject_id)
+#     host_colors <- setNames(colorRampPalette(brewer.pal(9, "Set1"))(length(unique_hosts)), unique_hosts)
+#     
+#     unique_conditions <- unique(meta_filtered$condition)
+#     if (length(unique_conditions) == 2) {
+#       condition_colors <- setNames(c("#1f78b4", "#33a02c"), unique_conditions)
+#     } else {
+#       condition_colors <- setNames(RColorBrewer::brewer.pal(max(3, length(unique_conditions)), "Set2"), unique_conditions)
+#     }
+#     
+#     annotation_col <- ComplexHeatmap::HeatmapAnnotation(
+#       Condition = meta_filtered$condition,
+#       Host_ID = ComplexHeatmap::anno_simple(meta_filtered$host_subject_id, col = host_colors),
+#       col = list(Condition = condition_colors),
+#       annotation_legend_param = list(Condition = list(title = "Condition")),
+#       show_annotation_name = TRUE
+#     )
+#     
+#     heatmap_colors <- circlize::colorRamp2(c(-2, 0, 2), c("#2c7bb6", "#ffffbf", "#d7191c"))
+#     
+#     heatmap_plot <- ComplexHeatmap::Heatmap(
+#       sig_counts_scaled,
+#       name = "Expression",
+#       col = heatmap_colors,
+#       cluster_rows = TRUE,
+#       cluster_columns = FALSE,
+#       show_row_names = TRUE,
+#       show_column_names = TRUE,
+#       row_names_gp = grid::gpar(fontsize = 6),
+#       column_names_gp = grid::gpar(fontsize = 8, col = host_colors[colnames(sig_counts_scaled)]),
+#       top_annotation = annotation_col,
+#       column_split = factor(meta_filtered$condition, levels = unique(meta_filtered$condition)),
+#       heatmap_legend_param = list(title = "Expression", legend_direction = "vertical"),
+#       border = TRUE
+#     )
+#     
+#     # Final output name with dataset
+#     outname <- paste0(dataset_name, "_", comparison, ".png")
+#     png_filename <- file.path(output_dir, outname)
+#     
+#     png(png_filename, width = 4800, height = 8000, res = 600)
+#     ComplexHeatmap::draw(heatmap_plot)
+#     dev.off()
+#     
+#     cat("Heatmap saved:", png_filename, "\n")
+#   }
+# }
+# 
+# 
+# 
+# # List DA files
+# all_files <- list.files("DA_results/da_sig", pattern = "\\.csv$", full.names = TRUE)
+# 
+# # Filter for dataset-specific files
+# dieguez_files <- grep("dieguez_", all_files, value = TRUE)
+# ev_files <- grep("ev_", all_files, value = TRUE)
+# 
+# # Generate heatmaps
+# ensure_dir("DA_results_1/heatmaps")
+# generate_all_heatmaps_1(ev_files, ev_complete_uniref_counts, metadata_ev, "ev", "DA_results_1/heatmaps")
