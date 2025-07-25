@@ -31,20 +31,22 @@ sig_df <- sig_df %>%
 
 # Define Venn groups
 venn_panels <- list(
-  A = c("Healthy-Baseline vs Healthy-Fl", "Healthy-Baseline vs Healthy-Fl-Ar", "Healthy-Fl vs Healthy-Fl-Ar"),
-  B = c("Caries-Baseline vs Caries-Fl", "Caries-Baseline vs Caries-Fl-Ar", "Caries-Fl vs Caries-Fl-Ar"),
-  C = c("Healthy-CF vs Healthy-CI", "Caries-CAa vs Healthy-CF", "Caries-CAa vs Healthy-CI"),
-  D = c("Healthy-CF vs Healthy-CI", "Caries-CAi vs Healthy-CF", "Caries-CAi vs Healthy-CI"),
-  E = c("Healthy-CF vs Healthy-CI", "Caries-CAs vs Healthy-CF", "Caries-CAs vs Healthy-CI"),
-  F = c("Caries-CAa vs Caries-CAi", "Caries-CAa vs Caries-CAs", "Caries-CAi vs Caries-CAs"),
-  G = c("Caries-CAa vs Healthy-CF", "Caries-CAi vs Healthy-CF", "Caries-CAs vs Healthy-CF"),
-  H = c("Caries-CAa vs Healthy-CI", "Caries-CAi vs Healthy-CI", "Caries-CAs vs Healthy-CI"),
-  I = c("Caries-Baseline vs Healthy-Baseline", "Caries-Fl vs Healthy-Fl", "Caries-Fl-Ar vs Healthy-Fl-Ar")
+  B = c("Caries-CAa vs Healthy-CF", "Caries-CAi vs Healthy-CF", "Caries-CAs vs Healthy-CF"),
+  C = c("Caries-CAa vs Healthy-CI", "Caries-CAi vs Healthy-CI", "Caries-CAs vs Healthy-CI"),
+  D = c("Healthy-CF vs Healthy-CI", "Caries-CAa vs Healthy-CF", "Caries-CAa vs Healthy-CI"),
+  E = c("Healthy-CF vs Healthy-CI", "Caries-CAi vs Healthy-CF", "Caries-CAi vs Healthy-CI"),
+  F = c("Healthy-CF vs Healthy-CI", "Caries-CAs vs Healthy-CF", "Caries-CAs vs Healthy-CI"),
+  G = c("Caries-CAa vs Caries-CAi", "Caries-CAa vs Caries-CAs", "Caries-CAi vs Caries-CAs"),
+  H = c("Healthy-Baseline vs Healthy-Fl", "Healthy-Baseline vs Healthy-Fl-Ar", "Healthy-Fl vs Healthy-Fl-Ar"),
+  I = c("Caries-Baseline vs Caries-Fl", "Caries-Baseline vs Caries-Fl-Ar", "Caries-Fl vs Caries-Fl-Ar"),
+  J = c("Caries-Baseline vs Healthy-Baseline", "Caries-Fl vs Healthy-Fl", "Caries-Fl-Ar vs Healthy-Fl-Ar")
 )
 
 output_dir <- "DA_results/venn_panels/"
 ensure_dir(output_dir)
 
+all_sets_for_export <- list()
+all_3way_intersections <- list()
 # Generate Venn diagrams
 for (panel in names(venn_panels)) {
   comparisons <- venn_panels[[panel]]
@@ -57,10 +59,15 @@ for (panel in names(venn_panels)) {
   })
   names(sets) <- comparisons
   
+  # Store for export
+  all_sets_for_export <- c(all_sets_for_export, sets)
+  common_all <- Reduce(intersect, sets)
+  all_3way_intersections[[panel]] <- common_all
   if (all(sapply(sets, length) == 0)) {
     message("Skipping panel ", panel, " — all sets are empty.")
     next
   }
+  
   insert_linebreaks <- function(label, words_per_line = 3) {
     words <- unlist(strsplit(label, " "))
     lines <- split(words, ceiling(seq_along(words) / words_per_line))
@@ -69,7 +76,7 @@ for (panel in names(venn_panels)) {
   
   category_names_with_n <- mapply(
     function(name, taxa) {
-      label_text <- if (panel == "I") {
+      label_text <- if (panel == "J") {
         wrapped <- insert_linebreaks(name, words_per_line = 2)
         paste0(wrapped, "\n(n = ", length(taxa), ")")
       } else {
@@ -81,36 +88,49 @@ for (panel in names(venn_panels)) {
     SIMPLIFY = TRUE
   )
   
-  
   file_path <- file.path(output_dir, paste0("Venn_Panel_", panel, ".png"))
   common_all <- Reduce(intersect, sets)
   message("Panel ", panel, ": 3-way intersection size = ", length(common_all))
   
-  # Define label positions
-  if (panel == "I") {
+  # Label angle and position
+  if (panel == "J") {
     label_angle <- c(0, 0, 0)
     label_dist <- c(0.15, 0.15, 0.05)
   } else {
-    label_angle <- c(-20, 20, -180)
+    label_angle <- c(-22, 22, -180)
     label_dist <- c(0.05, 0.05, 0.05)
   }
-  
   
   venn.diagram(
     x = sets,
     category.names = category_names_with_n,
     filename = file_path,
     imagetype = "png",
-    height = 3000,
-    width = 3000,
+    height = 4000,
+    width = 4000,
     resolution = 600,
-    cat.cex = 0.8,
+    cex = 1.4,
+    cat.cex = 0.9,
+    fill = brewer.pal(3, "Set2"),
     cat.pos = label_angle,
     cat.dist = label_dist,
-    cex = 1.4,
-    fill = brewer.pal(3, "Set2"),
-    margin = 0.1
+    margin = 0.1,
+    col = "black",
+    fontface = "bold",
+    fontfamily = "Arial",
+    cat.fontface = "bold",
+    cat.fontfamily = "Arial",
+    cat.col = rep("black", length(sets))
   )
   
   message("Saved: ", file_path)
 }
+
+
+max_len <- max(lengths(all_sets_for_export))
+df_combined <- as.data.frame(lapply(all_sets_for_export, function(x) `length<-`(x, max_len)))
+write.csv(df_combined, file.path(output_dir, "All_Venn_Sets_Combined.csv"), row.names = FALSE)
+
+max_intersection_len <- max(lengths(all_3way_intersections))
+df_intersections <- as.data.frame(lapply(all_3way_intersections, function(x) `length<-`(x, max_intersection_len)))
+write.csv(df_intersections, file.path(output_dir, "All_Venn_Intersections_3way.csv"), row.names = FALSE)
