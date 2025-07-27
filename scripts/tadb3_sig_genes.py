@@ -7,7 +7,7 @@ from collections import Counter
 Entrez.email = "shrivishalinir@gmail.com"
 sig_path = "DA_results/sig_genes.txt"
 tadb_path = "tadb3/master_table_tadb3.txt"
-output_path = "tadb3/sig_genes_annotations.csv""
+output_path = "tadb3/sig_genes_annotations.csv"
 
 # Load significant UniRef90 IDs
 sig_genes = set(pd.read_csv(sig_path, header=None)[0].str.strip())
@@ -18,8 +18,11 @@ df.columns = df.columns.str.strip()
 df = df[df["UniRef90_ID"].isin(sig_genes)].copy()
 
 # Ensure Score is numeric and filter by identity ≥ 90%
-df["Score"] = pd.to_numeric(df["Score"], errors="coerce")
-df = df[df["Score"] >= 90]
+df["Bit_Score"] = pd.to_numeric(df["Bit_Score"], errors="coerce")
+df = df[df["Bit_Score"] >= 90]
+print(f"Total rows in master table: {len(df)}")
+print(f"Significant UniRef90_IDs: {len(sig_genes)}")
+print(f"Rows after UniRef90_ID filter: {df.shape[0]}")
 
 # Extract species-level info from Organism field
 df["Organism_str"] = df["Organism"]
@@ -76,7 +79,7 @@ def prioritize_validation(x):
 # Aggregation map
 agg_funcs = {
     "Query_ID": lambda x: custom_agg(x),
-    "Score": lambda x: custom_agg(x, "max"),
+    "Bit_Score": lambda x: custom_agg(x, "max"),
     "Alignment_Length": lambda x: custom_agg(x, "mean"),
     "Mismatch": lambda x: custom_agg(x, "mean"),
     "Gap_Open": lambda x: custom_agg(x, "first"),
@@ -85,7 +88,6 @@ agg_funcs = {
     "S_Start": lambda x: custom_agg(x, "first"),
     "S_End": lambda x: custom_agg(x, "first"),
     "E_Value": lambda x: custom_agg(x, "min"),
-    "Bit_Score": lambda x: custom_agg(x, "max"),
     "Sample_Name": lambda x: custom_agg(x),
     "Validation_Type": prioritize_validation,
     "Toxin_Antitoxin": lambda x: custom_agg(x),

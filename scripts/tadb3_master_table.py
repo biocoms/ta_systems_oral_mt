@@ -10,22 +10,38 @@ fasta_file = "tadb3/tadb3_combined.fasta"
 sig_ids_file = "DA_results/sig_genes.txt"
 output_master_prefix = "master_table"
 output_filtered = "tadb3/tadb3_tox_antitox_sig_with_protein_names.tsv"
-output_main = "tadb3/tadb3_tox_antitox_main_table.tsv"
+output_main = "tadb3/tadb3_tox_antitox_main_table_1.tsv"
 
 # Parse FASTA metadata 
 def parse_fasta(fasta_file):
     records = []
     for record in SeqIO.parse(fasta_file, "fasta"):
-        parts = record.description.split("|")
-        if len(parts) >= 5:
-            records.append({
-                "Query_ID": record.id,
-                "Protein_Accession": parts[0],
-                "Genome_Accession": parts[1],
-                "Genome_Position": parts[2],
-                "Organism": parts[4]
-            })
+        query_id = record.id  # T22612
+        parts = record.description.split()
+        if len(parts) < 3:
+            continue  # skip malformed headers
+        
+        protein_acc = parts[1]  # WP_012260000.1
+        genome_acc_pos = parts[2]  # NC_010181:47341-47913
+        
+        if ':' in genome_acc_pos:
+            genome_acc, genome_pos = genome_acc_pos.split(":")
+        else:
+            genome_acc, genome_pos = genome_acc_pos, "Unknown"
+        
+        # Extract organism from final bracketed part
+        organism = record.description.split("[")[-1].split("]")[0] if "[" in record.description else "Unknown"
+        
+        records.append({
+            "Query_ID": query_id,
+            "Protein_Accession": protein_acc,
+            "Genome_Accession": genome_acc,
+            "Genome_Position": genome_pos,
+            "Organism": organism
+        })
+    
     return pd.DataFrame(records)
+
 
 # Build per-dataset master tables 
 def build_master_tables(diamond_dirs, fasta_df):
@@ -36,14 +52,27 @@ def build_master_tables(diamond_dirs, fasta_df):
                 continue
             fpath = os.path.join(path, file)
             sample = file.replace(".tsv", "")
-            df = pd.read_csv(fpath, sep="\t", header=None)
-            df.columns = ["Query_ID", "UniRef90_ID", "Identity", "Alignment_Length", "Mismatch",
+            if os.stat(fpath).st_size == 0:
+                print(f"Skipping empty file: {fpath}")
+                continue
+
+            try:
+                df = pd.read_csv(fpath, sep="\t", header=None)
+            except pd.errors.EmptyDataError:
+                print(f"Skipping unreadable file: {fpath}")
+                continue
+
+            df.columns = ["UniRef90_ID", "TADB3_ID", "Identity", "Alignment_Length", "Mismatch",
                           "Gap_Open", "Q_Start", "Q_End", "S_Start", "S_End", "E_Value", "Bit_Score"]
-            df = df.merge(fasta_df, on="Query_ID", how="left")
+            df = df.merge(fasta_df, left_on="TADB3_ID", right_on="Query_ID", how="left")
+            # print(f"\n[DEBUG] After merging {file}:")
+            # print(df.head())
+            # print("Columns:", df.columns.tolist())
+
             df["Sample_Name"] = sample
             df["Dataset"] = dataset
-            df["Validation_Type"] = df["Query_ID"].apply(lambda x: "Experimental" if "exp" in x else "Computational")
-            df["Toxin_Antitoxin"] = df["Query_ID"].apply(lambda x: "Toxin" if "_tox_" in x else "Antitoxin")
+            df["Validation_Type"] = df["UniRef90_ID"].apply(lambda x: "Experimental" if "exp" in x else "Computational")
+            df["Toxin_Antitoxin"] = df["UniRef90_ID"].apply(lambda x: "Toxin" if "_tox_" in x else "Antitoxin")
             dfs.append(df)
     return pd.concat(dfs)
 
@@ -107,6 +136,10 @@ def summarize(df):
 def run_pipeline():
     fasta_df = parse_fasta(fasta_file)
     print("Parsed FASTA.")
+    # print("FASTA DF columns:", fasta_df.columns.tolist())
+    # print("Example rows:")
+    # print(fasta_df.head())
+
     
     master_df = build_master_tables(diamond_dirs, fasta_df)
     print("Built master tables.")
