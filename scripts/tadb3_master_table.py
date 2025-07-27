@@ -4,7 +4,7 @@ from Bio import SeqIO, Entrez
 from tqdm import tqdm
 
 
-Entrez.email = "shrivishalinir@gmail.com"  # Replace this
+Entrez.email = "Youremail@email.com"  # Replace this
 diamond_dirs = {"dieguez": "tadb3/diamond_dieguez", "ev": "tadb3/diamond_ev"}
 fasta_file = "tadb3/tadb3_combined.fasta"
 sig_ids_file = "DA_results/sig_genes.txt"

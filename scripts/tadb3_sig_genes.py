@@ -4,7 +4,7 @@ from tqdm import tqdm
 import re
 from collections import Counter
 
-Entrez.email = "shrivishalinir@gmail.com"
+Entrez.email = "Youremail@email.com" # Replace this
 sig_path = "DA_results/sig_genes.txt"
 tadb_path = "tadb3/master_table_tadb3.txt"
 output_path = "tadb3/sig_genes_annotations.csv"

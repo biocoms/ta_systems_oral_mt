@@ -6,8 +6,8 @@ from tqdm import tqdm
 from Bio import Entrez
 
  
-Entrez.email = "shrivishalinir@gmail.com"
-sig_genes_path = "tadb3/sig_genes.txt"
+Entrez.email = "Youremail@email.com" # Replace this
+sig_genes_path = "DA_results/sig_genes.txt"
 vfdb_paths = [
     "vfdb/dieguez/*_vs_VFDB.tsv",
     "vfdb/ev/*_vs_VFDB.tsv"
