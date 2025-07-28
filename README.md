@@ -4,7 +4,7 @@ This repository accompanies the computational and analytical framework used to c
 
 The analysis integrates differential expression, curated functional annotations, and detailed visualizations to identify and interpret the transcriptional activity of TA gene pairs in healthy and caries-associated and caries-treated oral microbiomes. All scripts, intermediate data files, and processed outputs are included to enable reproducibility, transparency, and downstream reuse.
 
-$\color{red} \mathbf{Disclaimer}$ - All the raw fastq reads, their preprocessing, and functional annotation is not provided due to the storage efficiency. However, detailed scripts and step by step tutorial is mentioned below.
+${\color{red}Disclaimer}$ - All the raw fastq reads, their preprocessing, and functional annotation is not provided due to the storage efficiency. However, detailed scripts and step by step tutorial is mentioned below.
 
 ---
 
@@ -31,7 +31,7 @@ ta_systems_oral_mt/
 
 ```
 
-${\color{blue} \bold{Note}}$ - All files larger than 50MB are tracked using Git LFS. Access instructions are provided below.
+${\color{blue}Note}$ - All files larger than 50MB are tracked using Git LFS. Access instructions are provided below.
 
 ---
 
