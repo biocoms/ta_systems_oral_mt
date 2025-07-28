@@ -31,7 +31,7 @@ ta_systems_oral_mt/
 
 ```
 
-${\color{blue} \bold {Note}}$ - All files larger than 50MB are tracked using Git LFS. Access instructions are provided below.
+${\color{blue} \bold{Note}}$ - All files larger than 50MB are tracked using Git LFS. Access instructions are provided below.
 
 ---
 
