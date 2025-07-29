@@ -83,7 +83,7 @@ conda activate ta_env
 
 ## Authors and Maintainers
 
-[Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram) and [Priyanka Singh](https://github.com/decoder108)
+[Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram), [Priyanka Singh](https://github.com/decoder108) and [Erliang Zeng](https://github.com/zerl)
 
 ## Questions and Feedback
 
