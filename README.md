@@ -47,6 +47,21 @@ git clone https://github.com/biocoms/ta_systems_oral_mt.git
 cd ta_systems_oral_mt
 
 ```
+### Tools to install
+
+| Tool              | Version        | Source / Install Method                                                     | Documentation Link                                                                  |
+| ----------------- | -------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **FastQC**        | `0.12.1`       | `conda -c bioconda`                                                         | [FastQC Docs](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)           |
+| **Cutadapt**      | `2.10`         | `conda -c bioconda`                                                         | [Cutadapt Docs](https://cutadapt.readthedocs.io/en/stable/)                         |
+| **Trim Galore**   | `0.6.10`       | `conda -c bioconda`                                                         | [Trim Galore Docs](https://github.com/FelixKrueger/TrimGalore)                      |
+| **SortMeRNA**     | `4.3.7`        | `conda -c bioconda`                                                         | [SortMeRNA GitHub](https://github.com/biocore/sortmerna)                            |
+| **HUMAnN**        | `3.9`          | `conda -c bioconda`                                                         | [HUMAnN Docs](https://github.com/biobakery/humann)                          |
+| **Bowtie2**       | `>=2.4` (auto) | `conda -c bioconda`                                                         | [Bowtie2 Docs](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml)              |
+| **DIAMOND**       | `>=2.1` (auto) | `conda -c bioconda`                                                         | [DIAMOND Docs](https://github.com/bbuchfink/diamond)                                |
+| **eggNOG-mapper** | `2.1.12`       | `conda -c bioconda`                                                         | [eggNOG-mapper Docs](https://github.com/eggnogdb/eggnog-mapper)                     |
+| **HMMER**         | `auto`         | `conda -c bioconda`                                                         | [HMMER Docs](http://hmmer.org/)                                                     |
+| **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Docs](https://openjdk.org/)                                                |
+| **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
 
 If any large files are missing or stubbed out, ensure [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) is installed. You can also install `git lfs` via `conda` and activate in `git` as shown below.
 
