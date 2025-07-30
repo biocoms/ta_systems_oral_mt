@@ -3,3 +3,4 @@
 *.fasta filter=lfs diff=lfs merge=lfs -text
 raw_data/uniref90_toxin_toxic.tsv filter=lfs diff=lfs merge=lfs -text
 raw_data/dieguez_genefamilies.tsv filter=lfs diff=lfs merge=lfs -text
+tadb3/tadb3_combined.fasta filter=lfs diff=lfs merge=lfs -text
