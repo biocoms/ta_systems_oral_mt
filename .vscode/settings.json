@@ -3,6 +3,7 @@
         "bioconda",
         "bioinformatics",
         "Dieguez",
+        "Erliang",
         "fastq",
         "interproscan",
         "metatranscriptomic",
@@ -14,6 +15,7 @@
         "tadb",
         "uniref",
         "VFDB",
-        "Vishalini"
+        "Vishalini",
+        "Zeng"
     ]
 }

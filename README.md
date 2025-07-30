@@ -81,6 +81,15 @@ conda activate ta_env
 
 ```
 
+### 4. Install packages and download databases
+
+To ease the hassle of the installation, we have created a bash script for one step installation.
+${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the conda environment is active.
+
+```bash
+bash scripts/setup.sh
+```
+
 ## Authors and Maintainers
 
 [Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram), [Priyanka Singh](https://github.com/decoder108) and [Erliang Zeng](https://github.com/zerl)
