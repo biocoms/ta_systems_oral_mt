@@ -246,7 +246,7 @@ ta_systems_oral_mt/
 ├── ta_process.sh                          # Main preprocessing script
 └── log/
     └── processing_pipeline.log            # Cluster job log output
-'''
+```
 
 ## Authors and Maintainers
 
