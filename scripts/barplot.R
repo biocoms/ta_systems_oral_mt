@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggtext)
 library(ggplot2)
 library(patchwork)
+library(ggpubr)
 
 # Load Data 
 counts_dieguez <- read.csv("processed_data/processed_dieguez_genes.csv", row.names = 1, check.names = FALSE)
@@ -14,7 +15,7 @@ metadata_ev <- read_csv("raw_data/metadata_ev.csv") %>%
   mutate(
     condition = str_replace_all(str_trim(condition), " ?- ?", "-"))
 tadb3 <- read_tsv("tadb3/tadb3_tox_antitox_main_table.tsv")
-
+sig_combined <- read.csv("DA_results/sig_genes_combined.csv")
 # Define Gene Sets 
 toxins <- unique(tadb3 %>% filter(Toxin_Antitoxin == "Toxin") %>% pull(UniRef90_ID))
 antitoxins <- unique(tadb3 %>% filter(Toxin_Antitoxin == "Antitoxin") %>% pull(UniRef90_ID))
@@ -63,7 +64,6 @@ sig_ev <- sig_combined %>%
 
 plot_expression_bar_with_signif <- function(counts, metadata, genes, condition_order, gene_type, sig_df) {
   counts$gene <- rownames(counts)
-  pseudo <- 0.01
   
   # Long-form Expression Table 
   df <- counts %>%
@@ -78,7 +78,7 @@ plot_expression_bar_with_signif <- function(counts, metadata, genes, condition_o
         gene_type == "Toxin" ~ paste0("<span style='color:red;'>", gene, "</span>"),
         gene_type == "Antitoxin" ~ paste0("<span style='color:forestgreen;'>", gene, "</span>")
       ),
-      log_expr = log1p(expression + pseudo)
+      log_expr = log1p(expression)
     )
   
   # Summary Table (Mean ± SE) 
@@ -126,13 +126,20 @@ plot_expression_bar_with_signif <- function(counts, metadata, genes, condition_o
     ) +
     facet_wrap(~ gene_label, ncol = 3, scales = "free_y") +
     scale_fill_brewer(palette = "Set1") +
-    labs(x = "Condition", y = "log1p(Mean Expression + 0.01)") +
+    labs(x = "Condition", y = "log(1 + Expression)") +
     theme_bw(base_size = 13) +
     theme(
-      strip.text = ggtext::element_markdown(size = 9, face = "bold"),
-      axis.text.x = element_text(angle = 45, hjust = 1),
+      strip.text = ggtext::element_markdown(size = 13, face = "bold"),   # facet strip labels
+      axis.text.x = element_text(size = 10, face = "bold", angle = 45, hjust = 1),  # x-axis labels
+      axis.text.y = element_text(size = 10, face = "bold"),              # y-axis labels
+      axis.title.x = element_text(size = 12, face = "bold"),             # x-axis title
+      axis.title.y = element_text(size = 12, face = "bold"),             # y-axis title
+      plot.title = element_text(size = 16, face = "bold", hjust = 0.5),  # ggtitle()
+      legend.text = element_text(size = 11, face = "bold"),              # legend labels
+      legend.title = element_text(size = 12, face = "bold"),             # legend title
       legend.position = "none"
     )
+  
 }
 
 # Ev toxin/antitoxin bar plots with brackets
@@ -163,7 +170,8 @@ plot_gene_across_datasets <- function(gene, gene_type) {
       gene_type = gene_type,
       sig_df = sig_dieguez
     ) +
-      ggtitle(paste0(gene, " (Dieguez)"))
+      ggtitle(paste0(gene, " (Dieguez)")) +
+      theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
   }
   
   if (gene %in% sig_genes_ev) {
@@ -175,7 +183,8 @@ plot_gene_across_datasets <- function(gene, gene_type) {
       gene_type = gene_type,
       sig_df = sig_ev
     ) +
-      ggtitle(paste0(gene, " (Ev)"))
+      ggtitle(paste0(gene, " (Ev)")) +
+      theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
   }
   
   # Combine plots (side-by-side or single)
@@ -185,7 +194,7 @@ plot_gene_across_datasets <- function(gene, gene_type) {
     return(plots[[1]])
   }
 }
-dir.create("DA_results/boxplots/toxin_barplots", showWarnings = FALSE)
+dir.create("DA_results/barplots/toxin_barplots", showWarnings = FALSE)
 
 for (gene in unique(toxins)) {
   if (gene %in% all_sig_genes) {
@@ -196,7 +205,7 @@ for (gene in unique(toxins)) {
     p <- plot_gene_across_datasets(gene, gene_type = "Toxin")
     
     ggsave(
-      filename = paste0("DA_results/boxplots/toxin_barplots/", gene, "_barplot.png"),
+      filename = paste0("DA_results/barplots/toxin_barplots/", gene, "_barplot.png"),
       plot = p,
       width = 5 * num_panels,
       height = 5,
@@ -205,7 +214,7 @@ for (gene in unique(toxins)) {
   }
 }
 
-dir.create("DA_results/boxplots/antitoxin_barplots", showWarnings = FALSE)
+dir.create("DA_results/barplots/antitoxin_barplots", showWarnings = FALSE)
 
 for (gene in unique(antitoxins)) {
   if (gene %in% all_sig_genes) {
@@ -216,7 +225,7 @@ for (gene in unique(antitoxins)) {
     p <- plot_gene_across_datasets(gene, gene_type = "Antitoxin")
     
     ggsave(
-      filename = paste0("DA_results/boxplots/antitoxin_barplots/", gene, "_barplot.png"),
+      filename = paste0("DA_results/barplots/antitoxin_barplots/", gene, "_barplot.png"),
       plot = p,
       width = 5 * num_panels,
       height = 5,

@@ -76,12 +76,8 @@ for (panel in names(venn_panels)) {
   
   category_names_with_n <- mapply(
     function(name, taxa) {
-      label_text <- if (panel == "J") {
-        wrapped <- insert_linebreaks(name, words_per_line = 2)
-        paste0(wrapped, "\n(n = ", length(taxa), ")")
-      } else {
-        paste0(name, " (n = ", length(taxa), ")")
-      }
+      wrapped <- insert_linebreaks(name, words_per_line = 2)
+      label_text <- paste0(wrapped, "\n(n = ", length(taxa), ")")
       label_text
     },
     names(sets), sets,
@@ -94,11 +90,11 @@ for (panel in names(venn_panels)) {
   
   # Label angle and position
   if (panel == "J") {
-    label_angle <- c(0, 0, 0)
+    label_angle <- c(-10, -1, 10)
     label_dist <- c(0.15, 0.15, 0.05)
   } else {
     label_angle <- c(-22, 22, -180)
-    label_dist <- c(0.05, 0.05, 0.05)
+    label_dist <- c(0.2, 0.2, 0.2)
   }
   
   venn.diagram(
@@ -110,7 +106,7 @@ for (panel in names(venn_panels)) {
     width = 4000,
     resolution = 600,
     cex = 1.4,
-    cat.cex = 0.9,
+    cat.cex = 1.4,
     fill = brewer.pal(3, "Set2"),
     cat.pos = label_angle,
     cat.dist = label_dist,
