@@ -90,6 +90,164 @@ ${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder 
 bash scripts/setup.sh
 ```
 
+## Metatranscriptomic Preprocessing Pipeline
+The following section outlines the complete preprocessing pipeline to go from raw reads to functional gene and pathway profiles using publicly available tools.
+
+
+### 1. Download Raw Reads (SRA/ENA)
+Download the paired-end FASTQ files for both datasets using wget. Each dataset has a .txt file containing the FTP links from ENA/SRA.
+
+Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
+Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
+
+```bash
+wget -i dieguez.txt
+wget -i ev.txt
+```
+
+Make sure dieguez.txt and ev.txt each contain full FTP links for both R1 and R2 reads e.g.:
+
+```bash
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_1.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
+.......
+.......
+```
+
+### 2. Quality Control and Trimming (Trim Galore + FastQC)
+[Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
+
+Outputs:
+Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
+FastQC quality reports (*_fastqc.html)
+
+Command Example:
+```bash
+trim_galore --paired --fastqc --gzip --phred33 --length 50 \
+  --output_dir Dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
+```
+This step is performed for both Dieguez and Ev datasets.
+FastQC reports will help assess sequence quality pre- and post-trimming.
+
+
+### 3. Host and rRNA Removal (SortMeRNA)
+[SortMeRNA](https://github.com/sortmerna/sortmerna) filters out unwanted rRNA and host (human) reads using curated databases.
+
+Databases Used:
+
+SILVA rRNA databases (16S, 23S, 5S, etc.)
+Rfam (non-coding RNAs)
+GRCh38 (human genome and transcriptome)
+
+All reference FASTA files are stored in: dbs/ref_sortmerna/
+
+Inputs:
+
+Trimmed paired FASTQ files
+
+Outputs:
+
+*_aligned.fastq.gz — reads matching rRNA/host
+*_unaligned.fastq.gz — filtered reads for downstream analysis
+
+Command Template:
+```bash
+sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
+          --reads sample_1_trimmed.fastq.gz \
+          --reads sample_2_trimmed.fastq.gz \
+          --fastx \
+          --aligned output_dir/sample_aligned \
+          --other output_dir/sample_unaligned \
+          --threads 32
+```
+Filtered reads are saved into:
+Dieguez/trimmed_reads/sortmerna_unaligned/
+Ev/trimmed_reads/sortmerna_unaligned/
+
+## Functional Profiling (HUMAnN)
+[HUMAnN](https://github.com/biobakery/humann) (The HMP Unified Metabolic Analysis Network) is used to profile gene families and metabolic pathways from host-filtered microbial reads.
+
+Databases Required:
+
+ChocoPhlAn: nucleotide-level mapping (download from HUMAnN DBs)
+UniRef90 or UniRef50: translated protein database for function
+
+Inputs:
+
+.fq.gz files from sortmerna_unaligned/ directory
+
+Outputs (for each sample):
+
+*_genefamilies.tsv
+*_pathabundance.tsv
+*_pathcoverage.tsv
+
+Command Template:
+```bash
+humann -i sample_unaligned.fq.gz \
+       -o humann_output/sample_name \
+       --threads 32 \
+       --nucleotide-database humann/dbs/chocophlan \
+       --protein-database humann/dbs/uniref \
+       --verbose
+```
+Run separately for each dataset (Dieguez and Ev).
+
+## Directory Structure
+
+ta_systems_oral_mt/
+├── Dieguez/
+│   ├── trimmed_reads/
+│   │   ├── *_1_trimmed.fastq.gz
+│   │   ├── *_2_trimmed.fastq.gz
+│   │   ├── *_fastqc.html
+│   │   ├── *_fastqc.zip
+│   │   ├── sortmerna/
+│   │   │   ├── <sample>/
+│   │   │   │   ├── <sample>_aligned.fastq.gz
+│   │   │   │   ├── <sample>_unaligned.fastq.gz
+│   │   └── sortmerna_unaligned/
+│   │       └── *.fq.gz                     # Filtered (host & rRNA removed) reads
+│   └── humann/
+│       └── <sample>/
+│           ├── <sample>_genefamilies.tsv
+│           ├── <sample>_pathabundance.tsv
+│           └── <sample>_pathcoverage.tsv
+│
+├── Ev/
+│   ├── trimmed_reads/
+│   │   ├── *_1_trimmed.fastq.gz
+│   │   ├── *_2_trimmed.fastq.gz
+│   │   ├── *_fastqc.html
+│   │   ├── *_fastqc.zip
+│   │   ├── sortmerna/
+│   │   │   ├── <sample>/
+│   │   │   │   ├── <sample>_aligned.fastq.gz
+│   │   │   │   ├── <sample>_unaligned.fastq.gz
+│   │   └── sortmerna_unaligned/
+│   │       └── *.fq.gz                     # Filtered reads
+│   └── humann/
+│       └── <sample>/
+│           ├── <sample>_genefamilies.tsv
+│           ├── <sample>_pathabundance.tsv
+│           └── <sample>_pathcoverage.tsv
+│
+├── dbs/
+│   └── ref_sortmerna/                     # SortMeRNA reference databases
+│       ├── *.fasta
+│
+├── humann/
+│   └── dbs/
+│       ├── chocophlan/                    # HUMAnN nucleotide database
+│       └── uniref/                        # HUMAnN protein database
+│
+├── dieguez.txt                            # FTP links for Dieguez dataset
+├── ev.txt                                 # FTP links for Ev dataset
+├── ta_process.sh                          # Main preprocessing script
+└── log/
+    └── processing_pipeline.log            # Cluster job log output
+
+
 ## Authors and Maintainers
 
 [Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram), [Priyanka Singh](https://github.com/decoder108) and [Erliang Zeng](https://github.com/zerl)
