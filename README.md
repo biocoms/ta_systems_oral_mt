@@ -262,6 +262,113 @@ ta_systems_oral_mt/
 
 ---
 
+## Functional annotations
+
+## UniRef90 ID Extraction and FASTA Retrieval
+
+We first extracted unique **UniRef90 gene family IDs** from the `*_genefamilies.tsv` outputs of HUMAnN. These IDs were then used to fetch FASTA sequences for downstream functional annotation using InterProScan, eggNOG-mapper, TADB3, and VFDB.
+
+Inputs:
+
+- Directory of `*_genefamilies.tsv` files from HUMAnN for each sample  
+  (`raw_data/dieguez_genefamilies.tsv`, `raw_data/ev_genefamilies.tsv`)
+
+Steps
+
+1. **Extract UniRef90 IDs**
+   - Parsed each genefamilies file to collect only those gene families starting with `UniRef90_`.
+   - Saved as one ID list per sample in:  
+     `uniref_ids/extracted_ids/*_uniref90_ids.txt`
+2. **Download FASTA Sequences**
+   - Queried the UniProt REST API in chunks (default = 500 IDs/query).
+   - Fetched `.fasta` sequences corresponding to UniRef90 IDs per sample.
+   - Logs were saved for each sample to monitor download status.
+
+Script:
+
+- `scripts/uniref_idmapping.py`
+
+```python
+
+python scripts/uniref_idmapping.py \
+  --input_dir raw_data/dieguez_genefamilies.tsv \
+  --output_dir dieguez_uniref_mapped/
+
+```
+
+```python
+
+python scripts/uniref_idmapping.py \
+  --input_dir raw_data/ev_genefamilies.tsv \
+  --output_dir ev_uniref_mapped/
+
+```
+
+Outputs:
+
+- `uniref_ids/extracted_ids/*.txt` – Sample-wise UniRef90 ID lists
+- `uniref_ids/fastas/*.fasta` – Fetched amino acid sequences
+- `uniref_ids/logs/*.log` – Chunk-wise log of downloads per sample
+
+### Database annotations
+
+The shell script `database_annotations.sh` automates batch functional annotation using four major tools: **VFDB**, **TADB3**, **eggNOG-mapper**, and **InterProScan**, applied to UniRef90-mapped FASTA sequences from the Dieguez and EV datasets.
+
+Inputs
+
+- **FASTA Sequences**: Protein-coding genes extracted using UniRef90 IDs from significant TA genes.
+  - Located in:
+    - `dieguez_uniref_mapped/fastas/`
+    - `ev_uniref_mapped/fastas/`
+
+- **Databases**:
+  - `vfdb/VFDB_prot.dmnd`
+  - `tadb3/tadb3_combined.fasta/*.dmnd`
+  - `dbs/eggnog_data/eggnog_proteins.dmnd`
+  - `dbs/interproscan-5.72-103.0/interproscan.sh`
+
+- **Threads**: VFDB/TADB3 (64), eggNOG (80), InterProScan uses all available CPUs.
+
+Steps
+
+1. **VFDB (DIAMOND Blastp)**  
+   Matches each UniRef90 FASTA file to the VFDB protein database.  
+   Output format: tab-delimited DIAMOND blastp (`.tsv`)
+
+2. **TADB3 (DIAMOND Blastp to Multiple DBs)**  
+   Iteratively matches each FASTA to all `*.dmnd` toxin/antitoxin databases from TADB3.
+
+3. **eggNOG-mapper**  
+   Runs `emapper.py` with:
+   - Minimum 50% identity (`--pident`)
+   - Minimum 80% query coverage (`--query_cover`)
+   - DIAMOND mode, using custom eggNOG directory
+
+4. **InterProScan**  
+   Annotates each FASTA using InterProScan with GO term and IPR lookups.  
+   Output format: tab-separated `.tsv` with all domain and functional annotations.
+
+Outputs
+
+| Tool           | Dieguez Output Directory           | EV Output Directory                |
+|----------------|-------------------------------------|-------------------------------------|
+| **VFDB**       | `vfdb/dieguez/`                    | `vfdb/ev/`                          |
+| **TADB3**      | `tadb3/dieguez/`            | `tadb3/ev/`                  |
+| **eggNOG**     | `eggnog/dieguez/`         | `eggnog/ev/`               |
+| **InterProScan** | `interproscan/dieguez/`   | `interproscan/ev/`          |
+
+Execution
+
+To run all annotations:
+
+```bash
+
+bash database_annotations.sh
+
+```
+
+---
+
 ## Downstream Analysis: Differential Expression and Visualization
 
 All downstream analyses were conducted in R using the `ta_systems_oral_mt.Rproj` environment with strict reproducibility ensured via `renv`.
