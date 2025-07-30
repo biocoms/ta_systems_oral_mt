@@ -194,7 +194,7 @@ humann -i sample_unaligned.fq.gz \
 Run separately for each dataset (Dieguez and Ev).
 
 ## Directory Structure
-
+```bash
 ta_systems_oral_mt/
 ├── Dieguez/
 │   ├── trimmed_reads/
@@ -246,7 +246,7 @@ ta_systems_oral_mt/
 ├── ta_process.sh                          # Main preprocessing script
 └── log/
     └── processing_pipeline.log            # Cluster job log output
-
+'''
 
 ## Authors and Maintainers
 
