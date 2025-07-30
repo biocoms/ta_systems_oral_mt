@@ -39,7 +39,7 @@ ${\color{blue}Note}$ - All files larger than 50MB are tracked using Git LFS. Acc
 
 The project was developed and tested in a Linux-based environment (HPC cluster), and assumes working familiarity with standard bioinformatics tooling and R/Python scripting.
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 
@@ -47,7 +47,8 @@ git clone https://github.com/biocoms/ta_systems_oral_mt.git
 cd ta_systems_oral_mt
 
 ```
-### Tools to install
+
+### Install packages and download databases
 
 | Tool              | Version        | Source / Install Method                                                     | Documentation Link                                                                  |
 | ----------------- | -------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -63,73 +64,54 @@ cd ta_systems_oral_mt
 | **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Docs](https://openjdk.org/)                                                |
 | **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
 
+To ease the hassle of the installation, we have created a bash script for one step installation.
+${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) is installed.
+
+```bash
+bash scripts/setup.sh
+```
+
 If any large files are missing or stubbed out, ensure [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) is installed. You can also install `git lfs` via `conda` and activate in `git` as shown below.
 
 ```bash
 
 git lfs install
 git lfs pull
+git lfs track "filename or file extension"
+git add .gitattributes
 
 ```
 
-### 2. Configure Conda Channels (Highly recommended)
+## Metatranscriptomic Data processing Pipeline
 
-Ensure your Conda installation is correctly configured with strict channel priority.
-
-```bash
-
-conda config --add channels defaults
-conda config --add channels bioconda
-conda config --add channels conda-forge
-conda config --set channel_priority strict
-
-```
-
-### 3. Create Conda Environment
-
-We recommend creating a dedicated Conda environment (e.g., oral_ta_env) for running preprocessing and database annotation steps.
-
-```bash
-
-conda create -n ta_env python=3.10 -y
-conda activate ta_env
-
-```
-
-### 4. Install packages and download databases
-
-To ease the hassle of the installation, we have created a bash script for one step installation.
-${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the conda environment is active.
-
-```bash
-bash scripts/setup.sh
-```
-
-## Metatranscriptomic Preprocessing Pipeline
 The following section outlines the complete preprocessing pipeline to go from raw reads to functional gene and pathway profiles using publicly available tools.
 
 
-### 1. Download Raw Reads (SRA/ENA)
-Download the paired-end FASTQ files for both datasets using wget. Each dataset has a .txt file containing the FTP links from ENA/SRA.
+### Download Raw Reads (SRA/ENA)
+Enter these BioProject numbers in [SRA-Explorer](https://sra-explorer.info), copy the FTP links of the paired-end FASTQ files to a .txt file and download using `wget`
 
 Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
 Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
 
 ```bash
+
 wget -i dieguez.txt
 wget -i ev.txt
+
 ```
 
 Make sure dieguez.txt and ev.txt each contain full FTP links for both R1 and R2 reads e.g.:
 
 ```bash
+
 ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_1.fastq.gz
 ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 .......
 .......
+
 ```
 
-### 2. Quality Control and Trimming (Trim Galore + FastQC)
+### Quality Control and Trimming (Trim Galore)
 [Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
 
 Outputs:
@@ -137,9 +119,12 @@ Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
 FastQC quality reports (*_fastqc.html)
 
 Command Example:
+
 ```bash
+
 trim_galore --paired --fastqc --gzip --phred33 --length 50 \
   --output_dir Dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
+
 ```
 This step is performed for both Dieguez and Ev datasets.
 FastQC reports will help assess sequence quality pre- and post-trimming.
