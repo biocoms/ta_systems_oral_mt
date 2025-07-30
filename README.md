@@ -91,6 +91,7 @@ The following section outlines the complete preprocessing pipeline to go from ra
 Enter these BioProject numbers in [SRA-Explorer](https://sra-explorer.info), copy the FTP links of the paired-end FASTQ files to a .txt file and download using `wget`
 
 Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
+
 Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
 
 ```bash
@@ -112,6 +113,7 @@ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 ```
 
 ### Quality Control and Trimming (Trim Galore)
+
 [Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
 
 Outputs:
@@ -130,16 +132,16 @@ This step is performed for both Dieguez and Ev datasets.
 FastQC reports will help assess sequence quality pre- and post-trimming.
 
 
-### 3. Host and rRNA Removal (SortMeRNA)
+### Host and rRNA Removal (SortMeRNA)
 [SortMeRNA](https://github.com/sortmerna/sortmerna) filters out unwanted rRNA and host (human) reads using curated databases.
 
 Databases Used:
 
-SILVA rRNA databases (16S, 23S, 5S, etc.)
-Rfam (non-coding RNAs)
-GRCh38 (human genome and transcriptome)
+- SILVA rRNA databases (16S, 23S, 5S, etc.)
+- Rfam (non-coding RNAs)
+- GRCh38 (human genome and transcriptome)
 
-All reference FASTA files are stored in: dbs/ref_sortmerna/
+All reference FASTA files are stored in: dbs/sortmerna_databases/
 
 Inputs:
 
@@ -151,7 +153,9 @@ Outputs:
 *_unaligned.fastq.gz — filtered reads for downstream analysis
 
 Command Template:
+
 ```bash
+
 sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
           --reads sample_1_trimmed.fastq.gz \
           --reads sample_2_trimmed.fastq.gz \
@@ -159,17 +163,19 @@ sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
           --aligned output_dir/sample_aligned \
           --other output_dir/sample_unaligned \
           --threads 32
+
 ```
 Filtered reads are saved into:
 Dieguez/trimmed_reads/sortmerna_unaligned/
 Ev/trimmed_reads/sortmerna_unaligned/
 
 ## Functional Profiling (HUMAnN)
-[HUMAnN](https://github.com/biobakery/humann) (The HMP Unified Metabolic Analysis Network) is used to profile gene families and metabolic pathways from host-filtered microbial reads.
+
+[HUMAnN3](https://github.com/biobakery/humann) (The HMP Unified Metabolic Analysis Network) is used to profile gene families and metabolic pathways from host-filtered microbial reads.
 
 Databases Required:
 
-ChocoPhlAn: nucleotide-level mapping (download from HUMAnN DBs)
+ChocoPhlAn: nucleotide-level mapping 
 UniRef90 or UniRef50: translated protein database for function
 
 Inputs:
@@ -178,22 +184,26 @@ Inputs:
 
 Outputs (for each sample):
 
-*_genefamilies.tsv
-*_pathabundance.tsv
-*_pathcoverage.tsv
+- *_genefamilies.tsv
+- *_pathabundance.tsv
+- *_pathcoverage.tsv
 
 Command Template:
+
 ```bash
+
 humann -i sample_unaligned.fq.gz \
        -o humann_output/sample_name \
        --threads 32 \
        --nucleotide-database humann/dbs/chocophlan \
        --protein-database humann/dbs/uniref \
        --verbose
+
 ```
 Run separately for each dataset (Dieguez and Ev).
 
-## Directory Structure
+### Directory Structure
+
 ```bash
 ta_systems_oral_mt/
 ├── Dieguez/
@@ -233,11 +243,9 @@ ta_systems_oral_mt/
 │           └── <sample>_pathcoverage.tsv
 │
 ├── dbs/
-│   └── ref_sortmerna/                     # SortMeRNA reference databases
+│   └── sortmerna_databases/                     # SortMeRNA reference databases
 │       ├── *.fasta
-│
-├── humann/
-│   └── dbs/
+│   └── humann_databases/
 │       ├── chocophlan/                    # HUMAnN nucleotide database
 │       └── uniref/                        # HUMAnN protein database
 │
@@ -246,6 +254,7 @@ ta_systems_oral_mt/
 ├── ta_process.sh                          # Main preprocessing script
 └── log/
     └── processing_pipeline.log            # Cluster job log output
+
 ```
 
 ## Authors and Maintainers
