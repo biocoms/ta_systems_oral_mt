@@ -46,6 +46,8 @@ ${\color{red}Disclaimer}$ - All the raw fastq reads, their preprocessing, and fu
   - [Authors and Maintainers](#authors-and-maintainers)
   - [Questions and Feedback](#questions-and-feedback)
 
+---
+
 ## Repository Overview & Structure
 
 The directory structure:
