@@ -130,9 +130,9 @@ The following section outlines the complete preprocessing pipeline to go from ra
 
 Enter these BioProject numbers in [SRA-Explorer](https://sra-explorer.info), copy the FTP links of the paired-end FASTQ files to a .txt file and download using `wget`
 
-- Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
+- Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA712952)
 
-- Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
+- Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA930965)
 
 ```bash
 
