@@ -8,6 +8,44 @@ ${\color{red}Disclaimer}$ - All the raw fastq reads, their preprocessing, and fu
 
 ---
 
+- [Toxin–Antitoxin Systems in the Oral Microbiome](#toxinantitoxin-systems-in-the-oral-microbiome)
+  - [Repository Overview \& Structure](#repository-overview--structure)
+  - [Installation instructions](#installation-instructions)
+    - [Clone the Repository](#clone-the-repository)
+    - [Install packages and download databases](#install-packages-and-download-databases)
+  - [Metatranscriptomic Data processing Pipeline](#metatranscriptomic-data-processing-pipeline)
+    - [Download Raw Reads (SRA/ENA)](#download-raw-reads-sraena)
+    - [Quality Control and Trimming (Trim Galore)](#quality-control-and-trimming-trim-galore)
+    - [Host and rRNA Removal (SortMeRNA)](#host-and-rrna-removal-sortmerna)
+  - [Functional Profiling (HUMAnN)](#functional-profiling-humann)
+    - [Directory Structure](#directory-structure)
+  - [Functional annotations](#functional-annotations)
+  - [UniRef90 ID Extraction and FASTA Retrieval](#uniref90-id-extraction-and-fasta-retrieval)
+    - [Database annotations](#database-annotations)
+  - [Downstream Analysis: Differential Expression and Visualization](#downstream-analysis-differential-expression-and-visualization)
+    - [**Environment Setup**](#environment-setup)
+    - [Data Cleaning and Preprocessing](#data-cleaning-and-preprocessing)
+    - [UniRef90 Toxin Cluster Overlap and Venn Analysis](#uniref90-toxin-cluster-overlap-and-venn-analysis)
+    - [Differential Abundance Analysis (ANCOM-BC)](#differential-abundance-analysis-ancom-bc)
+    - [Volcano Plot Visualization](#volcano-plot-visualization)
+    - [Expression Heatmaps (ComplexHeatmap)](#expression-heatmaps-complexheatmap)
+    - [Gene Set Overlap Analysis: UpSet and Venn Panels](#gene-set-overlap-analysis-upset-and-venn-panels)
+      - [UpSet Plot of Significant TA Genes](#upset-plot-of-significant-ta-genes)
+      - [Comparison Label Harmonization](#comparison-label-harmonization)
+      - [Venn Diagram Panels (Three-Way Intersection)](#venn-diagram-panels-three-way-intersection)
+      - [Venn Panel Reference Table](#venn-panel-reference-table)
+  - [Functional Annotations](#functional-annotations-1)
+    - [Parsing TADB3 DIAMOND Results](#parsing-tadb3-diamond-results)
+    - [Annotating Significant Genes with TADB3](#annotating-significant-genes-with-tadb3)
+    - [Annotating Significant Genes with VFDB](#annotating-significant-genes-with-vfdb)
+    - [Annotating Significant Genes with eggNOG-mapper](#annotating-significant-genes-with-eggnog-mapper)
+    - [Annotating Significant Genes with InterProScan](#annotating-significant-genes-with-interproscan)
+  - [Validated TA Gene Clusters](#validated-ta-gene-clusters)
+    - [Summary Statistics by Condition](#summary-statistics-by-condition)
+    - [Condition-Wise Expression Barplots](#condition-wise-expression-barplots)
+  - [Authors and Maintainers](#authors-and-maintainers)
+  - [Questions and Feedback](#questions-and-feedback)
+
 ## Repository Overview & Structure
 
 The directory structure:
@@ -90,9 +128,9 @@ The following section outlines the complete preprocessing pipeline to go from ra
 
 Enter these BioProject numbers in [SRA-Explorer](https://sra-explorer.info), copy the FTP links of the paired-end FASTQ files to a .txt file and download using `wget`
 
-Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
+- Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
 
-Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
+- Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
 
 ```bash
 
@@ -117,8 +155,9 @@ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 [Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
 
 Outputs:
-Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
-FastQC quality reports (*_fastqc.html)
+
+- Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
+- FastQC quality reports (*_fastqc.html)
 
 Command Example:
 
@@ -128,6 +167,13 @@ trim_galore --paired --fastqc --gzip --phred33 --length 50 \
   --output_dir Dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
 
 ```
+
+--paired: Indicates paired-end reads.
+--fastqc: Runs FastQC before and after trimming for QC reports.
+--gzip: Compresses the output files in .gz format.
+--phred33: Specifies base quality encoding (standard for Illumina).
+--length 50: Discards reads shorter than 50 bp after trimming.
+--output_dir: Output folder for trimmed reads and FastQC reports.
 
 This step is performed for both Dieguez and Ev datasets.
 FastQC reports will help assess sequence quality pre- and post-trimming.
@@ -167,9 +213,19 @@ sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
 
 ```
 
+--ref: Specifies each reference database for filtering.
+--reads: Input FASTQ files (both forward and reverse).
+--fastx: Ensures FASTQ format is preserved for input/output.
+--aligned: Output prefix for reads that matched references.
+--other: Output prefix for reads that did not match references.
+--threads: Number of threads to use for parallel processing.
+
 Filtered reads are saved into:
-Dieguez/trimmed_reads/sortmerna_unaligned/
-Ev/trimmed_reads/sortmerna_unaligned/
+
+- Dieguez/trimmed_reads/sortmerna_unaligned/
+- Ev/trimmed_reads/sortmerna_unaligned/
+
+These unaligned reads are used as input for HUMAnN.
 
 ## Functional Profiling (HUMAnN)
 
@@ -186,9 +242,9 @@ Inputs:
 
 Outputs (for each sample):
 
-- *_genefamilies.tsv
-- *_pathabundance.tsv
-- *_pathcoverage.tsv
+- {sample}_genefamilies.tsv
+- {sample}_pathabundance.tsv
+- {sample}_pathcoverage.tsv
 
 Command Template:
 
@@ -203,7 +259,17 @@ humann -i sample_unaligned.fq.gz \
 
 ```
 
+-i: Input FASTQ file (filtered reads).
+-o: Output directory for results.
+--threads: Number of parallel threads for speed.
+--nucleotide-database: Path to ChocoPhlAn nucleotide database.
+--protein-database: Path to UniRef protein database.
+--verbose: Prints detailed progress during execution.
+
 Run separately for each dataset (Dieguez and Ev).
+
+Run separately for each dataset (Dieguez and Ev).
+This step generates functional profiles that can be used for downstream gene/pathway analysis and comparison.
 
 ### Directory Structure
 
