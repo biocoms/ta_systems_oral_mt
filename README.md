@@ -154,11 +154,11 @@ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 
 ### Quality Control and Trimming (Trim Galore)
 
-[Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
+[Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines FastQC and Cutadapt to perform quality filtering and adapter trimming.
 
 Outputs:
 
-- Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
+- Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz,_2_trimmed.fastq.gz)
 - FastQC quality reports (*_fastqc.html)
 
 Command Example:
