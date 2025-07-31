@@ -125,7 +125,7 @@ git add .gitattributes
 
 ## Metatranscriptomic Data Processing Pipeline
 
-The following section outlines the complete preprocessing pipeline to go from raw reads to functional gene and pathway profiles using publicly available tools.
+The following section details the entire preprocessing workflow using publicly available tools, from raw sequencing reads to functional gene and pathway profiles.
 
 ### Download Raw Reads (SRA/ENA)
 
@@ -142,7 +142,7 @@ wget -i ev.txt
 
 ```
 
-Make sure dieguez.txt and ev.txt each contain full FTP links for both R1 and R2 reads e.g.:
+Make sure dieguez.txt and ev.txt each contains full FTP links for both R1 and R2 reads e.g.:
 
 ```bash
 
