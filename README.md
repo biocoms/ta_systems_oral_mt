@@ -159,25 +159,30 @@ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 Outputs:
 
 - Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz,_2_trimmed.fastq.gz)
-- FastQC quality reports (*_fastqc.html)
+- FastQC quality reports (_fastqc.html,_fastqc.zip)
 
 Command Example:
 
 ```bash
 
 trim_galore --paired --fastqc --gzip --phred33 --length 50 \
-  --output_dir Dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
+  --output_dir dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
 
 ```
 
---paired: Indicates paired-end reads.
---fastqc: Runs FastQC before and after trimming for QC reports.
---gzip: Compresses the output files in .gz format.
---phred33: Specifies base quality encoding (standard for Illumina).
---length 50: Discards reads shorter than 50 bp after trimming.
---output_dir: Output folder for trimmed reads and FastQC reports.
+- --paired: Indicates paired-end reads.
 
-This step is performed for both Dieguez and Ev datasets.
+- --fastqc: Runs FastQC before and after trimming for QC reports.
+
+- --gzip: Compresses the output files in .gz format.
+
+- --phred33: Specifies base quality encoding (standard for Illumina).
+  
+- --length 50: Discards reads shorter than 50 bp after trimming.
+  
+- --output_dir: Output folder for trimmed reads and FastQC reports.
+
+This step is performed for (all sequences) both Dieguez and Ev datasets.
 FastQC reports will help assess sequence quality pre- and post-trimming.
 
 ### Host and rRNA Removal (SortMeRNA)
@@ -211,21 +216,26 @@ sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
           --fastx \
           --aligned output_dir/sample_aligned \
           --other output_dir/sample_unaligned \
-          --threads 32
+          --threads 32                        #flexible as per available cores
 
 ```
 
---ref: Specifies each reference database for filtering.
---reads: Input FASTQ files (both forward and reverse).
---fastx: Ensures FASTQ format is preserved for input/output.
---aligned: Output prefix for reads that matched references.
---other: Output prefix for reads that did not match references.
---threads: Number of threads to use for parallel processing.
+- --ref: Specifies each reference database for filtering.
+  
+- --reads: Input FASTQ files (both forward and reverse).
+  
+- --fastx: Ensures FASTQ format is preserved for input/output.
+  
+- --aligned: Output prefix for reads that matched references.
+  
+- --other: Output prefix for reads that did not match references.
+  
+- --threads: Number of threads to use for parallel processing.
 
 Filtered reads are saved into:
 
-- Dieguez/trimmed_reads/sortmerna_unaligned/
-- Ev/trimmed_reads/sortmerna_unaligned/
+- dieguez/trimmed_reads/sortmerna_unaligned/
+- ev/trimmed_reads/sortmerna_unaligned/
 
 These unaligned reads are used as input for HUMAnN.
 
@@ -277,7 +287,7 @@ This step generates functional profiles that can be used for downstream gene/pat
 
 ```bash
 ta_systems_oral_mt/
-├── Dieguez/
+├── dieguez/
 │   ├── trimmed_reads/
 │   │   ├── *_1_trimmed.fastq.gz
 │   │   ├── *_2_trimmed.fastq.gz
@@ -295,7 +305,7 @@ ta_systems_oral_mt/
 │           ├── <sample>_pathabundance.tsv
 │           └── <sample>_pathcoverage.tsv
 │
-├── Ev/
+├── ev/
 │   ├── trimmed_reads/
 │   │   ├── *_1_trimmed.fastq.gz
 │   │   ├── *_2_trimmed.fastq.gz
