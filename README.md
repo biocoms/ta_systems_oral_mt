@@ -199,12 +199,12 @@ All reference FASTA files are stored in: dbs/sortmerna_databases/
 
 Inputs:
 
-Trimmed paired FASTQ files
+Trimmed paired FASTQ files (trimmed_reads/*_1_trimmed.fastq.gz and trimmed_reads/*_2_trimmed.fastq.gz)
 
 Outputs:
 
-*_aligned.fastq.gz — reads matching rRNA/host
-*_unaligned.fastq.gz — filtered reads for downstream analysis
+- *_aligned.fastq.gz — reads matching rRNA/host
+- *_unaligned.fastq.gz — filtered reads for downstream analysis
 
 Command Template:
 
@@ -245,12 +245,12 @@ These unaligned reads are used as input for HUMAnN.
 
 Databases Required:
 
-ChocoPhlAn: nucleotide-level mapping
-UniRef90 or UniRef50: translated protein database for function
+- ChocoPhlAn: nucleotide-level mapping
+- UniRef90 or UniRef50: translated protein database for function
 
 Inputs:
 
-.fq.gz files from sortmerna_unaligned/ directory
+- .fq.gz files from sortmerna_unaligned/ directory
 
 Outputs (for each sample):
 
@@ -271,17 +271,17 @@ humann -i sample_unaligned.fq.gz \
 
 ```
 
--i: Input FASTQ file (filtered reads).
--o: Output directory for results.
---threads: Number of parallel threads for speed.
---nucleotide-database: Path to ChocoPhlAn nucleotide database.
---protein-database: Path to UniRef protein database.
---verbose: Prints detailed progress during execution.
+- -i: Input FASTQ file (filtered reads).
+- -o: Output directory for results.
+- --threads: Number of parallel threads for speed.
+- --nucleotide-database: Path to ChocoPhlAn nucleotide database.
+- --protein-database: Path to UniRef protein database.
+- --verbose: Prints detailed progress during execution.
 
 Run separately for each dataset (Dieguez and Ev).
 
 Run separately for each dataset (Dieguez and Ev).
-This step generates functional profiles that can be used for downstream gene/pathway analysis and comparison.
+This step generates functional profiles that can be used for downstream gene analysis and comparison towards TA gene clusters.
 
 ### Directory Structure
 
