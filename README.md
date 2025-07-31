@@ -823,6 +823,6 @@ Outputs:
 
 ## Questions and Feedback
 
-This repository is maintained by PhD students actively learning and working at the intersection of microbiome science and computational biology. While we strive for accuracy and reproducibility, this work is part of our training, and mistakes are possible.
+This repository is maintained by the Bioinformatics and Computational Systems Biology Lab at the University of Iowa. 
 
 If you notice any errors, have suggestions for improvement, or simply want to discuss aspects of the analysis, we genuinely welcome your feedback. Please feel free to open an issue or contact us. We are always learning and happy to engage with the community.
