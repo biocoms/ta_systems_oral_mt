@@ -105,6 +105,7 @@ cd ta_systems_oral_mt
 | **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
 
 To ease the hassle of the installation, we have created a bash script for one step installation.
+
 ${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) is installed.
 
 ```bash
