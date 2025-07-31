@@ -77,7 +77,7 @@ ${\color{blue}Note}$ - All files larger than 50MB are tracked using Git LFS. Acc
 
 ## Installation instructions
 
-The project was developed and tested in a Linux-based environment (HPC cluster), and assumes working familiarity with standard bioinformatics tooling and R/Python scripting.
+All analyses were developed and executed on a Linux-based HPC cluster and assume working familiarity with common bioinformatics tools plus basic R/Python scripting.
 
 ### Clone the Repository
 
