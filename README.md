@@ -23,7 +23,7 @@ ${\color{red}Disclaimer}$ - All the raw fastq reads, their preprocessing, and fu
   - [UniRef90 ID Extraction and FASTA Retrieval](#uniref90-id-extraction-and-fasta-retrieval)
     - [Database annotations](#database-annotations)
   - [Downstream Analysis: Differential Expression and Visualization](#downstream-analysis-differential-expression-and-visualization)
-    - [**Environment Setup**](#environment-setup)
+    - [Environment Setup](#environment-setup)
     - [Data Cleaning and Preprocessing](#data-cleaning-and-preprocessing)
     - [UniRef90 Toxin Cluster Overlap and Venn Analysis](#uniref90-toxin-cluster-overlap-and-venn-analysis)
     - [Differential Abundance Analysis (ANCOM-BC)](#differential-abundance-analysis-ancom-bc)
@@ -441,7 +441,7 @@ bash database_annotations.sh
 
 All downstream analyses were conducted in R using the `ta_systems_oral_mt.Rproj` environment with strict reproducibility ensured via `renv`.
 
-### **Environment Setup**
+### Environment Setup
 
 Activate the project-local R environment using:
 
