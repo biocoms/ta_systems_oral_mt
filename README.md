@@ -183,8 +183,7 @@ trim_galore --paired --fastqc --gzip --phred33 --length 50 \
   
 - --output_dir: Output folder for trimmed reads and FastQC reports.
 
-This step is performed for (all sequences) both Dieguez and Ev datasets.
-FastQC reports will help assess sequence quality pre- and post-trimming.
+This step is applied to both the Dieguez and Ev datasets. FastQC reports are generated to evaluate sequence quality before and after trimming.
 
 ### Host and rRNA Removal (SortMeRNA)
 
