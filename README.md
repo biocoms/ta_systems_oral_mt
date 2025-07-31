@@ -104,7 +104,7 @@ cd ta_systems_oral_mt
 | **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Docs](https://openjdk.org/)                                                |
 | **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
 
-To ease the hassle of the installation, we have created a bash script for one step installation.
+To streamline setup, we provide a single bash script that installs all dependencies in one step.
 
 ${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) is installed.
 
@@ -123,7 +123,7 @@ git add .gitattributes
 
 ```
 
-## Metatranscriptomic Data processing Pipeline
+## Metatranscriptomic Data Processing Pipeline
 
 The following section outlines the complete preprocessing pipeline to go from raw reads to functional gene and pathway profiles using publicly available tools.
 
