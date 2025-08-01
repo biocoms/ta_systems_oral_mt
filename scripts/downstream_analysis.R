@@ -309,7 +309,7 @@ run_ancombc_analysis <- function(datasets, metadata, output_dir = "DA_results/")
       if (nrow(significant_df) > 0) {
         significant_df <- significant_df %>%
           mutate(combinations = paste0(dataset_name, "_", gsub(" ", "", condition1), "vs", gsub(" ", "", condition2))) %>%
-          select(Taxon, combinations, pval)
+          select(Taxon, combinations, lfc, pval, qval)
         
         sig_genes_list <- append(sig_genes_list, list(significant_df))
       }
