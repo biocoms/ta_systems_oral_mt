@@ -4,7 +4,47 @@ This repository accompanies the computational and analytical framework used to c
 
 The analysis integrates differential expression, curated functional annotations, and detailed visualizations to identify and interpret the transcriptional activity of TA gene pairs in healthy and caries-associated and caries-treated oral microbiomes. All scripts, intermediate data files, and processed outputs are included to enable reproducibility, transparency, and downstream reuse.
 
-${\color{red}Disclaimer}$ - All the raw fastq reads, their preprocessing, and functional annotation is not provided due to the storage efficiency. However, detailed scripts and step by step tutorial is mentioned below.
+${\color{red}Disclaimer}$ - The raw FASTQ reads, intermediate preprocessing files, and full functional annotations are not included here due to storage constraints. However, detailed scripts and a step-by-step tutorial are provided below.
+
+---
+
+- [Toxin–Antitoxin Systems in the Oral Microbiome](#toxinantitoxin-systems-in-the-oral-microbiome)
+  - [Repository Overview \& Structure](#repository-overview--structure)
+  - [Installation instructions](#installation-instructions)
+    - [Clone the Repository](#clone-the-repository)
+    - [Install packages and download databases](#install-packages-and-download-databases)
+  - [Metatranscriptomic Data processing Pipeline](#metatranscriptomic-data-processing-pipeline)
+    - [Download Raw Reads (SRA/ENA)](#download-raw-reads-sraena)
+    - [Quality Control and Trimming (Trim Galore)](#quality-control-and-trimming-trim-galore)
+    - [Host and rRNA Removal (SortMeRNA)](#host-and-rrna-removal-sortmerna)
+  - [Functional Profiling (HUMAnN)](#functional-profiling-humann)
+    - [Directory Structure](#directory-structure)
+  - [Functional annotations](#functional-annotations)
+  - [UniRef90 ID Extraction and FASTA Retrieval](#uniref90-id-extraction-and-fasta-retrieval)
+    - [Database annotations](#database-annotations)
+  - [Downstream Analysis: Differential Expression and Visualization](#downstream-analysis-differential-expression-and-visualization)
+    - [Environment Setup](#environment-setup)
+    - [Data Cleaning and Preprocessing](#data-cleaning-and-preprocessing)
+    - [UniRef90 Toxin Cluster Overlap and Venn Analysis](#uniref90-toxin-cluster-overlap-and-venn-analysis)
+    - [Differential Abundance Analysis (ANCOM-BC)](#differential-abundance-analysis-ancom-bc)
+    - [Volcano Plot Visualization](#volcano-plot-visualization)
+    - [Expression Heatmaps (ComplexHeatmap)](#expression-heatmaps-complexheatmap)
+    - [Gene Set Overlap Analysis: UpSet and Venn Panels](#gene-set-overlap-analysis-upset-and-venn-panels)
+      - [UpSet Plot of Significant TA Genes](#upset-plot-of-significant-ta-genes)
+      - [Comparison Label Harmonization](#comparison-label-harmonization)
+      - [Venn Diagram Panels (Three-Way Intersection)](#venn-diagram-panels-three-way-intersection)
+      - [Venn Panel Reference Table](#venn-panel-reference-table)
+  - [Functional Annotations](#functional-annotations-1)
+    - [Parsing TADB3 DIAMOND Results](#parsing-tadb3-diamond-results)
+    - [Annotating Significant Genes with TADB3](#annotating-significant-genes-with-tadb3)
+    - [Annotating Significant Genes with VFDB](#annotating-significant-genes-with-vfdb)
+    - [Annotating Significant Genes with eggNOG-mapper](#annotating-significant-genes-with-eggnog-mapper)
+    - [Annotating Significant Genes with InterProScan](#annotating-significant-genes-with-interproscan)
+  - [Validated TA Gene Clusters](#validated-ta-gene-clusters)
+    - [Summary Statistics by Condition](#summary-statistics-by-condition)
+    - [Condition-Wise Expression Barplots](#condition-wise-expression-barplots)
+  - [Authors and Maintainers](#authors-and-maintainers)
+  - [Questions and Feedback](#questions-and-feedback)
 
 ---
 
@@ -37,7 +77,7 @@ ${\color{blue}Note}$ - All files larger than 50MB are tracked using Git LFS. Acc
 
 ## Installation instructions
 
-The project was developed and tested in a Linux-based environment (HPC cluster), and assumes working familiarity with standard bioinformatics tooling and R/Python scripting.
+All analyses were developed and executed on a Linux-based HPC cluster and assume working familiarity with common bioinformatics tools plus basic R/Python scripting.
 
 ### Clone the Repository
 
@@ -64,7 +104,8 @@ cd ta_systems_oral_mt
 | **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Docs](https://openjdk.org/)                                                |
 | **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
 
-To ease the hassle of the installation, we have created a bash script for one step installation.
+To streamline setup, we provide a single bash script that installs all dependencies in one step.
+
 ${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) is installed.
 
 ```bash
@@ -82,17 +123,17 @@ git add .gitattributes
 
 ```
 
-## Metatranscriptomic Data processing Pipeline
+## Metatranscriptomic Data Processing Pipeline
 
-The following section outlines the complete preprocessing pipeline to go from raw reads to functional gene and pathway profiles using publicly available tools.
+The following section details the entire preprocessing workflow using publicly available tools, from raw sequencing reads to functional gene and pathway profiles.
 
 ### Download Raw Reads (SRA/ENA)
 
 Enter these BioProject numbers in [SRA-Explorer](https://sra-explorer.info), copy the FTP links of the paired-end FASTQ files to a .txt file and download using `wget`
 
-Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA712952&o=acc_s%3Aa)
+- Dieguez: BioProject [PRJNA712952](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA712952)
 
-Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA930965&o=acc_s%3Aa)
+- Ev: BioProject [PRJNA930965](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA930965)
 
 ```bash
 
@@ -101,7 +142,7 @@ wget -i ev.txt
 
 ```
 
-Make sure dieguez.txt and ev.txt each contain full FTP links for both R1 and R2 reads e.g.:
+Make sure dieguez.txt and ev.txt each contains full FTP links for both R1 and R2 reads e.g.:
 
 ```bash
 
@@ -114,23 +155,35 @@ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR233/020/SRR23351020/SRR23351020_2.fastq.gz
 
 ### Quality Control and Trimming (Trim Galore)
 
-[Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines Cutadapt and FastQC to perform quality filtering and adapter trimming.
+[Trim Galore](https://github.com/FelixKrueger/TrimGalore) is a wrapper tool that combines FastQC and Cutadapt to perform quality filtering and adapter trimming.
 
 Outputs:
-Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz)
-FastQC quality reports (*_fastqc.html)
+
+- Trimmed paired FASTQ files (e.g., _1_trimmed.fastq.gz,_2_trimmed.fastq.gz)
+- FastQC quality reports (_fastqc.html,_fastqc.zip)
 
 Command Example:
 
 ```bash
 
 trim_galore --paired --fastqc --gzip --phred33 --length 50 \
-  --output_dir Dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
+  --output_dir dieguez/trimmed_reads sample_1.fastq.gz sample_2.fastq.gz
 
 ```
 
-This step is performed for both Dieguez and Ev datasets.
-FastQC reports will help assess sequence quality pre- and post-trimming.
+- --paired: Indicates paired-end reads.
+
+- --fastqc: Runs FastQC before and after trimming for QC reports.
+
+- --gzip: Compresses the output files in .gz format.
+
+- --phred33: Specifies base quality encoding (standard for Illumina).
+  
+- --length 50: Discards reads shorter than 50 bp after trimming.
+  
+- --output_dir: Output folder for trimmed reads and FastQC reports.
+
+This step is applied to both the Dieguez and Ev datasets. FastQC reports are generated to evaluate sequence quality before and after trimming.
 
 ### Host and rRNA Removal (SortMeRNA)
 
@@ -146,12 +199,12 @@ All reference FASTA files are stored in: dbs/sortmerna_databases/
 
 Inputs:
 
-Trimmed paired FASTQ files
+Trimmed paired FASTQ files (trimmed_reads/*_1_trimmed.fastq.gz and trimmed_reads/*_2_trimmed.fastq.gz)
 
 Outputs:
 
-*_aligned.fastq.gz — reads matching rRNA/host
-*_unaligned.fastq.gz — filtered reads for downstream analysis
+- *_aligned.fastq.gz — reads matching rRNA/host
+- *_unaligned.fastq.gz — filtered reads for downstream analysis
 
 Command Template:
 
@@ -163,13 +216,28 @@ sortmerna --ref dbs/ref_sortmerna/silva-bac-16s-id90.fasta \
           --fastx \
           --aligned output_dir/sample_aligned \
           --other output_dir/sample_unaligned \
-          --threads 32
+          --threads 32                        #flexible as per available cores
 
 ```
 
+- --ref: Specifies each reference database for filtering.
+  
+- --reads: Input FASTQ files (both forward and reverse).
+  
+- --fastx: Ensures FASTQ format is preserved for input/output.
+  
+- --aligned: Output prefix for reads that matched references.
+  
+- --other: Output prefix for reads that did not match references.
+  
+- --threads: Number of threads to use for parallel processing.
+
 Filtered reads are saved into:
-Dieguez/trimmed_reads/sortmerna_unaligned/
-Ev/trimmed_reads/sortmerna_unaligned/
+
+- dieguez/trimmed_reads/sortmerna_unaligned/
+- ev/trimmed_reads/sortmerna_unaligned/
+
+These unaligned reads are used as input for HUMAnN.
 
 ## Functional Profiling (HUMAnN)
 
@@ -177,18 +245,18 @@ Ev/trimmed_reads/sortmerna_unaligned/
 
 Databases Required:
 
-ChocoPhlAn: nucleotide-level mapping
-UniRef90 or UniRef50: translated protein database for function
+- ChocoPhlAn: nucleotide-level mapping
+- UniRef90 or UniRef50: translated protein database for function
 
 Inputs:
 
-.fq.gz files from sortmerna_unaligned/ directory
+- .fq.gz files from sortmerna_unaligned/ directory
 
 Outputs (for each sample):
 
-- *_genefamilies.tsv
-- *_pathabundance.tsv
-- *_pathcoverage.tsv
+- {sample}_genefamilies.tsv
+- {sample}_pathabundance.tsv
+- {sample}_pathcoverage.tsv
 
 Command Template:
 
@@ -203,13 +271,23 @@ humann -i sample_unaligned.fq.gz \
 
 ```
 
+- -i: Input FASTQ file (filtered reads).
+- -o: Output directory for results.
+- --threads: Number of parallel threads for speed.
+- --nucleotide-database: Path to ChocoPhlAn nucleotide database.
+- --protein-database: Path to UniRef protein database.
+- --verbose: Prints detailed progress during execution.
+
 Run separately for each dataset (Dieguez and Ev).
+
+Run separately for each dataset (Dieguez and Ev).
+This step generates functional profiles that can be used for downstream gene analysis and comparison towards TA gene clusters.
 
 ### Directory Structure
 
 ```bash
 ta_systems_oral_mt/
-├── Dieguez/
+├── dieguez/
 │   ├── trimmed_reads/
 │   │   ├── *_1_trimmed.fastq.gz
 │   │   ├── *_2_trimmed.fastq.gz
@@ -227,7 +305,7 @@ ta_systems_oral_mt/
 │           ├── <sample>_pathabundance.tsv
 │           └── <sample>_pathcoverage.tsv
 │
-├── Ev/
+├── ev/
 │   ├── trimmed_reads/
 │   │   ├── *_1_trimmed.fastq.gz
 │   │   ├── *_2_trimmed.fastq.gz
@@ -373,7 +451,7 @@ bash database_annotations.sh
 
 All downstream analyses were conducted in R using the `ta_systems_oral_mt.Rproj` environment with strict reproducibility ensured via `renv`.
 
-### **Environment Setup**
+### Environment Setup
 
 Activate the project-local R environment using:
 
@@ -745,6 +823,6 @@ Outputs:
 
 ## Questions and Feedback
 
-This repository is maintained by PhD students actively learning and working at the intersection of microbiome science and computational biology. While we strive for accuracy and reproducibility, this work is part of our training, and mistakes are possible.
+This repository is maintained by the Bioinformatics and Computational Systems Biology Lab at the University of Iowa. 
 
-If you notice any errors, have suggestions for improvement, or simply want to discuss aspects of the analysis, we genuinely welcome your feedback. Please feel free to open an issue or contact us. We are always learning and happy to engage with the community.
+If you notice any errors, have suggestions for improvement, or simply want to discuss aspects of the analysis, we genuinely welcome your feedback. Please feel free to open an issue or contact us. We are always happy to engage with the community.
