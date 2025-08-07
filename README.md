@@ -1,6 +1,6 @@
 # Toxin–Antitoxin Systems in the Oral Microbiome
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16763308.svg)](https://doi.org/10.5281/zenodo.16763307)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16763308.svg)](https://doi.org/10.5281/zenodo.16763308)
 
 This repository contains the computational and analytical framework used to characterize **toxin–antitoxin (TA) systems** in the oral microbiome using metatranscriptomic data from two publicly available cohorts: **Dieguez et al.** and **Ev** datasets.
 
@@ -866,6 +866,10 @@ ta_systems_oral_mt/
 ## Authors and Maintainers
 
 [Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram), [Priyanka Singh](https://github.com/decoder108) and [Erliang Zeng](https://github.com/zerl)
+
+## Cite this repository
+
+Shri Vishalini Rajaram, Priyanka Singh, & Erliang Zeng. (2025). biocoms/ta_systems_oral_mt: Bacterial Toxin-Antitoxin Systems in Oral Metatranscriptome (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.16763308
 
 ## Questions and Feedback
 
