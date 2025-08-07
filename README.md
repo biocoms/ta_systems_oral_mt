@@ -1,5 +1,7 @@
 # Toxin–Antitoxin Systems in the Oral Microbiome
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16763308.svg)](https://doi.org/10.5281/zenodo.16763307)
+
 This repository contains the computational and analytical framework used to characterize **toxin–antitoxin (TA) systems** in the oral microbiome using metatranscriptomic data from two publicly available cohorts: **Dieguez et al.** and **Ev** datasets.
 
 The analysis integrates differential expression, curated functional annotations, and detailed visualizations to identify and interpret the transcriptional activity of TA gene pairs in healthy and caries-associated and caries-treated oral microbiomes. All scripts, intermediate data files, and processed outputs are included to enable reproducibility, transparency, and downstream reuse.
