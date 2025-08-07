@@ -69,20 +69,6 @@ cd ta_systems_oral_mt
 
 ### Install packages and download databases
 
-| Tool              | Version        | Source / Install Method                                                     | Documentation Link                                                                  |
-| ----------------- | -------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **FastQC**        | `0.12.1`       | `conda -c bioconda`                                                         | [FastQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)           |
-| **Cutadapt**      | `2.10`         | `conda -c bioconda`                                                         | [Cutadapt Documentation](https://cutadapt.readthedocs.io/en/stable/)                         |
-| **Trim Galore**   | `0.6.10`       | `conda -c bioconda`                                                         | [Trim Galore Documentation](https://github.com/FelixKrueger/TrimGalore)                      |
-| **SortMeRNA**     | `4.3.7`        | `conda -c bioconda`                                                         | [SortMeRNA GitHub](https://github.com/biocore/sortmerna)                            |
-| **HUMAnN**        | `3.9`          | `conda -c bioconda`                                                         | [HUMAnN Documentation](https://github.com/biobakery/humann)                          |
-| **Bowtie2**       | `>=2.4` (auto) | `conda -c bioconda`                                                         | [Bowtie2 Documentation](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml)              |
-| **DIAMOND**       | `>=2.1` (auto) | `conda -c bioconda`                                                         | [DIAMOND Documentation](https://github.com/bbuchfink/diamond)                                |
-| **eggNOG-mapper** | `2.1.12`       | `conda -c bioconda`                                                         | [eggNOG-mapper Documentation](https://github.com/eggnogdb/eggnog-mapper)                     |
-| **HMMER**         | `auto`         | `conda -c bioconda`                                                         | [HMMER Documentation](http://hmmer.org/)                                                     |
-| **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Documentation](https://openjdk.org/)                                                |
-| **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Documentation](https://interproscan-docs.readthedocs.io/)                      |
-
 To streamline setup, we provide a single bash script that installs all dependencies in one step.
 
 ${\color{blue}Note}$ - Ensure this github is cloned, you are inside this folder and the [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) is installed.
