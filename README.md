@@ -824,6 +824,34 @@ ta_systems_oral_mt/
 | **OpenJDK**       | `11.0.25`    | `mamba install -c conda-forge openjdk=11.0.25`                                                            | [Documentation](https://openjdk.org/)                                      |
 | **InterProScan**  | `5.72-103.0` | `wget https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/interproscan-5.72-103.0-64-bit.tar.gz` | [Documentation](https://interproscan-docs.readthedocs.io/)            |
 | **git-lfs**       | `latest`     | `mamba install -c conda-forge git-lfs`                                                                    | [Documentation](https://git-lfs.com/)                                      |
+| **biopython**    | `1.85`   | `pip install biopython==1.85`     | [Documentation](https://biopython.org/wiki/Documentation)              |
+| **pandas**       | `2.3.1`  | `pip install pandas==2.3.1`       | [Documentation](https://pandas.pydata.org/docs/)                          |
+| **tqdm**         | `4.67.1` | `pip install tqdm==4.67.1`        | [Documentation](https://tqdm.github.io/)                                    |
+| **requests**     | `2.32.4` | `pip install requests==2.32.4`    | [Documentation](https://requests.readthedocs.io/)                       |
+| **lxml**         | `6.0.0`  | `pip install lxml==6.0.0`         | [Documentation](https://lxml.de/)                                           |
+| **openpyxl**     | `3.1.5`  | `pip install openpyxl==3.1.5`     | [Documentation](https://openpyxl.readthedocs.io/en/stable/)             |
+| **matplotlib**   | `3.10.3` | `pip install matplotlib==3.10.3`  | [Documentation](https://matplotlib.org/stable/contents.html)          |
+| **seaborn**      | `0.13.2` | `pip install seaborn==0.13.2`     | [Documentation](https://seaborn.pydata.org/)                             |
+| **scikit-learn** | `1.7.1`  | `pip install scikit-learn==1.7.1` | [Documentation](https://scikit-learn.org/stable/documentation.html) |
+| **scipy**        | `1.16.1` | `pip install scipy==1.16.1`       | [Documentation](https://docs.scipy.org/doc/scipy/)                         |
+| **statsmodels**  | `0.14.5` | `pip install statsmodels==0.14.5` | [Documentation](https://www.statsmodels.org/stable/index.html)                         |
+| **tidyverse**      | 2.0.0   | `install.packages("tidyverse")`          | [Documentation](https://www.tidyverse.org/packages/)                            |
+| **ggplot2**        | 3.5.2   | `install.packages("ggplot2")`            | [Documentation](https://ggplot2.tidyverse.org/)                                   |
+| **patchwork**      | 1.3.1   | `install.packages("patchwork")`          | [Documentation](https://patchwork.data-imaginist.com/)                          |
+| **ggpubr**         | 0.6.1   | `install.packages("ggpubr")`             | [Documentation](https://rpkgs.datanovia.com/ggpubr/)                               |
+| **ggtext**         | 0.1.2   | `install.packages("ggtext")`             | [Documentation](https://wilkelab.org/ggtext/)                                      |
+| **ggrepel**        | 0.9.6   | `install.packages("ggrepel")`            | [Documentation](https://github.com/slowkow/ggrepel)                               |
+| **ggsignif**       | 0.6.4   | `install.packages("ggsignif")`           | [Documentation](https://github.com/const-ae/ggsignif)                            |
+| **pheatmap**       | 1.0.13  | `install.packages("pheatmap")`           | [Documentation](https://cran.r-project.org/web/packages/pheatmap/)               |
+| **ComplexHeatmap** | 2.22.0  | `BiocManager::install("ComplexHeatmap")` | [Documentation](https://jokergoo.github.io/ComplexHeatmap-reference/book/) |
+| **circlize**       | 0.4.16  | `BiocManager::install("circlize")`       | [Documentation](https://jokergoo.github.io/circlize_book/book/)                  |
+| **gridExtra**      | 2.3     | `install.packages("gridExtra")`          | [Documentation](https://cran.r-project.org/web/packages/gridExtra/)             |
+| **RColorBrewer**   | 1.1-3   | `install.packages("RColorBrewer")`       | [Documentation](https://cran.r-project.org/web/packages/RColorBrewer/)       |
+| **VennDiagram**    | 1.7.3   | `install.packages("VennDiagram")`        | [Documentation](https://cran.r-project.org/web/packages/VennDiagram/)         |
+| **UpSetR**         | 1.4.0   | `install.packages("UpSetR")`             | [Documentation](https://cran.r-project.org/web/packages/UpSetR/)                                                      |
+| **phyloseq**       | 1.50.0  | `BiocManager::install("phyloseq")`       | [Documentation](https://joey711.github.io/phyloseq/)                             |
+| **ANCOMBC**        | 2.8.1   | `BiocManager::install("ANCOMBC")`        | [Documentation](https://bioconductor.org/packages/ANCOMBC/)                       |
+| **microbiome**     | 1.28.0  | `BiocManager::install("microbiome")`     | [Documentation](https://microbiome.github.io/tutorials/)                       |
 
 ## Authors and Maintainers
 
