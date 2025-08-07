@@ -1,6 +1,6 @@
 # Toxin–Antitoxin Systems in the Oral Microbiome
 
-This repository accompanies the computational and analytical framework used to characterize **toxin–antitoxin (TA) systems** in the oral microbiome using metatranscriptomic data from two publicly available cohorts: **Dieguez et al.** and **Ev** datasets.
+This repository contains the computational and analytical framework used to characterize **toxin–antitoxin (TA) systems** in the oral microbiome using metatranscriptomic data from two publicly available cohorts: **Dieguez et al.** and **Ev** datasets.
 
 The analysis integrates differential expression, curated functional annotations, and detailed visualizations to identify and interpret the transcriptional activity of TA gene pairs in healthy and caries-associated and caries-treated oral microbiomes. All scripts, intermediate data files, and processed outputs are included to enable reproducibility, transparency, and downstream reuse.
 
@@ -50,27 +50,6 @@ ${\color{red}Disclaimer}$ - The raw FASTQ reads, intermediate preprocessing file
 
 ## Repository Overview & Structure
 
-The directory structure:
-
-```bash
-
-ta_systems_oral_mt/
-├── DA_results/              # Differential expression results - tables and visualizations
-├── eggnog/                  # Functional annotations from eggNOG-mapper
-├── interproscan/            # InterProScan annotations for significant genes
-├── processed_data/          # Preprocessed and cleaned expression matrices
-├── raw_data/                # Raw input files (metadata, UniRef90 toxin-antitoxin files, functional gene tables)
-├── scripts/                 # All analysis scripts (R/Python)
-├── tadb3/                   # TADB3 toxin–antitoxin annotation tables and sequences
-├── uniref_tox_abundance/    # Abundance tables intersecting Dieguez, ev and UniRef90 toxin–antitoxin gene clusters
-├── venn_diagrams/           # Venn diagrams used in the manuscript
-├── vfdb/                    # VFDB annotations (dieguez/ev-specific)
-├── README.md                # Project description and documentation
-├── LICENSE                  # License for usage
-└── ta_systems_oral_mt.Rproj # R project file for downstream analysis
-
-```
-
 ${\color{blue}Note}$ - All files larger than 50MB are tracked using Git LFS. Access instructions are provided below.
 
 ---
@@ -92,17 +71,17 @@ cd ta_systems_oral_mt
 
 | Tool              | Version        | Source / Install Method                                                     | Documentation Link                                                                  |
 | ----------------- | -------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **FastQC**        | `0.12.1`       | `conda -c bioconda`                                                         | [FastQC Docs](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)           |
-| **Cutadapt**      | `2.10`         | `conda -c bioconda`                                                         | [Cutadapt Docs](https://cutadapt.readthedocs.io/en/stable/)                         |
-| **Trim Galore**   | `0.6.10`       | `conda -c bioconda`                                                         | [Trim Galore Docs](https://github.com/FelixKrueger/TrimGalore)                      |
+| **FastQC**        | `0.12.1`       | `conda -c bioconda`                                                         | [FastQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)           |
+| **Cutadapt**      | `2.10`         | `conda -c bioconda`                                                         | [Cutadapt Documentation](https://cutadapt.readthedocs.io/en/stable/)                         |
+| **Trim Galore**   | `0.6.10`       | `conda -c bioconda`                                                         | [Trim Galore Documentation](https://github.com/FelixKrueger/TrimGalore)                      |
 | **SortMeRNA**     | `4.3.7`        | `conda -c bioconda`                                                         | [SortMeRNA GitHub](https://github.com/biocore/sortmerna)                            |
-| **HUMAnN**        | `3.9`          | `conda -c bioconda`                                                         | [HUMAnN Docs](https://github.com/biobakery/humann)                          |
-| **Bowtie2**       | `>=2.4` (auto) | `conda -c bioconda`                                                         | [Bowtie2 Docs](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml)              |
-| **DIAMOND**       | `>=2.1` (auto) | `conda -c bioconda`                                                         | [DIAMOND Docs](https://github.com/bbuchfink/diamond)                                |
-| **eggNOG-mapper** | `2.1.12`       | `conda -c bioconda`                                                         | [eggNOG-mapper Docs](https://github.com/eggnogdb/eggnog-mapper)                     |
-| **HMMER**         | `auto`         | `conda -c bioconda`                                                         | [HMMER Docs](http://hmmer.org/)                                                     |
-| **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Docs](https://openjdk.org/)                                                |
-| **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Docs](https://interproscan-docs.readthedocs.io/)                      |
+| **HUMAnN**        | `3.9`          | `conda -c bioconda`                                                         | [HUMAnN Documentation](https://github.com/biobakery/humann)                          |
+| **Bowtie2**       | `>=2.4` (auto) | `conda -c bioconda`                                                         | [Bowtie2 Documentation](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml)              |
+| **DIAMOND**       | `>=2.1` (auto) | `conda -c bioconda`                                                         | [DIAMOND Documentation](https://github.com/bbuchfink/diamond)                                |
+| **eggNOG-mapper** | `2.1.12`       | `conda -c bioconda`                                                         | [eggNOG-mapper Documentation](https://github.com/eggnogdb/eggnog-mapper)                     |
+| **HMMER**         | `auto`         | `conda -c bioconda`                                                         | [HMMER Documentation](http://hmmer.org/)                                                     |
+| **OpenJDK**       | `11`           | `conda -c conda-forge`                                                      | [OpenJDK Documentation](https://openjdk.org/)                                                |
+| **InterProScan**  | `5.72-103.0`   | [Manual FTP](https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/) | [InterProScan Documentation](https://interproscan-docs.readthedocs.io/)                      |
 
 To streamline setup, we provide a single bash script that installs all dependencies in one step.
 
@@ -817,12 +796,57 @@ Outputs:
 - `DA_results/barplots/toxin_barplots/*.png`
 - `DA_results/barplots/antitoxin_barplots/*.png`
 
+## Directory structure
+
+```bash
+
+ta_systems_oral_mt/
+├── DA_results/              # Differential expression results - tables and visualizations
+├── dieguez_uniref_mapped/   # Sample-wise mapping of the functional profiled UniRef90 Ids and Fastas
+├── eggnog/                  # Functional annotations from eggNOG-mapper
+├── ev_uniref_mapped/        # Sample-wise mapping of the functional profiled UniRef90 Ids and Fastas
+├── interproscan/            # InterProScan annotations for significant genes
+├── processed_data/          # Preprocessed and cleaned expression matrices
+├── raw_data/                # Raw input files (metadata, UniRef90 toxin-antitoxin files, functional gene tables)
+├── scripts/                 # All analysis scripts (R/Python)
+├── tadb3/                   # TADB3 toxin–antitoxin annotation tables and sequences
+├── uniref_tox_abundance/    # Abundance tables intersecting Dieguez, ev and UniRef90 toxin–antitoxin gene clusters
+├── venn_diagrams/           # Venn diagrams used in the manuscript
+├── vfdb/                    # VFDB annotations (dieguez/ev-specific)
+├── README.md                # Project description and documentation
+├── LICENSE                  # License for usage
+└── ta_systems_oral_mt.Rproj # R project file for downstream analysis
+
+## Packages to install
+
+| Tool              | Version      | Install Command                                                                                           | Documentation Link                                                        |
+| ----------------- | ------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **FastQC**        | `0.12.1`     | `mamba install -c bioconda fastqc=0.12.1`                                                                 | [Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) |
+| **Cutadapt**      | `5.0`        | `mamba install -c bioconda cutadapt=5.0`                                                                  | [Documentation](https://cutadapt.readthedocs.io/en/stable/)               |
+| **Trim Galore**   | `0.6.10`     | `mamba install -c bioconda trim-galore=0.6.10`                                                            | [Documentation](https://github.com/FelixKrueger/TrimGalore)            |
+| **SortMeRNA**     | `4.3.7`      | `mamba install -c bioconda sortmerna=4.3.7`                                                               | [Documentation](https://github.com/biocore/sortmerna)                  |
+| **HUMAnN**        | `3.9`        | `pip install humann==3.9`                                                                                 | [Documentation](https://github.com/biobakery/humann)                        |
+| **Bowtie2**       | `2.5.4`      | `mamba install -c bioconda bowtie2=2.5.4`                                                                 | [Documentation](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml)    |
+| **DIAMOND**       | `2.1.10`     | `mamba install -c bioconda diamond=2.1.10`                                                                | [Documentation](https://github.com/bbuchfink/diamond)                      |
+| **eggNOG-mapper** | `2.1.12`     | `mamba install -c bioconda eggnog-mapper=2.1.12`                                                          | [Documentation](https://github.com/eggnogdb/eggnog-mapper)           |
+| **HMMER**         | `3.4`        | `mamba install -c bioconda hmmer=3.4`                                                                     | [Documentation](http://hmmer.org/)                                           |
+| **MMseqs2**       | `latest`     | `mamba install -c bioconda mmseqs2`                                                                       | [Documentation](https://github.com/soedinglab/MMseqs2)                     |
+| **Prodigal**      | `2.6.3`      | `mamba install -c bioconda prodigal=2.6.3`                                                                | [Documentation](https://github.com/hyattpd/Prodigal)                      |
+| **MultiQC**       | `1.26`       | `pip install multiqc==1.26`                                                                               | [Documentation](https://multiqc.info/docs/)                                |
+| **OpenJDK**       | `11.0.25`    | `mamba install -c conda-forge openjdk=11.0.25`                                                            | [Documentation](https://openjdk.org/)                                      |
+| **InterProScan**  | `5.72-103.0` | `wget https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/interproscan-5.72-103.0-64-bit.tar.gz` | [Documentation](https://interproscan-docs.readthedocs.io/)            |
+| **git-lfs**       | `latest`     | `mamba install -c conda-forge git-lfs`                                                                    | [Documentation](https://git-lfs.com/)                                      |
+
+
+
+```
+
 ## Authors and Maintainers
 
 [Shri Vishalini Rajaram](https://github.com/shrivishalinirajaram), [Priyanka Singh](https://github.com/decoder108) and [Erliang Zeng](https://github.com/zerl)
 
 ## Questions and Feedback
 
-This repository is maintained by the Bioinformatics and Computational Systems Biology Lab at the University of Iowa. 
+This repository is maintained by the Bioinformatics and Computational Systems Biology Lab at the University of Iowa.
 
 If you notice any errors, have suggestions for improvement, or simply want to discuss aspects of the analysis, we genuinely welcome your feedback. Please feel free to open an issue or contact us. We are always happy to engage with the community.
