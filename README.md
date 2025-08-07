@@ -307,7 +307,7 @@ ta_systems_oral_mt/
 
 ## Functional annotations
 
-## UniRef90 ID Extraction and FASTA Retrieval
+### UniRef90 ID Extraction and FASTA Retrieval
 
 We first extracted unique **UniRef90 gene family IDs** from the `*_genefamilies.tsv` outputs of HUMAnN. These IDs were then used to fetch FASTA sequences for downstream functional annotation using InterProScan, eggNOG-mapper, TADB3, and VFDB.
 
@@ -718,6 +718,8 @@ Output:
 
 - `interproscan/sig_genes_annotations.csv`: Clean annotation table with GO terms and structured categories for significant genes.
 
+---
+
 ## Validated TA Gene Clusters
 
 This section summarizes and visualizes the expression behavior of experimentally validated or computationally predicted toxin–antitoxin (TA) system genes based on curated annotations from TADB3. Two components are included:
@@ -782,6 +784,8 @@ Outputs:
 - `DA_results/barplots/toxin_barplots/*.png`
 - `DA_results/barplots/antitoxin_barplots/*.png`
 
+---
+
 ## Directory structure
 
 ```bash
@@ -804,6 +808,8 @@ ta_systems_oral_mt/
 └── ta_systems_oral_mt.Rproj # R project file for downstream analysis
 
 ```
+
+---
 
 ## Packages to install
 
