@@ -34,7 +34,7 @@ ${\color{red}Disclaimer}$ - The raw FASTQ reads, intermediate preprocessing file
       - [Comparison Label Harmonization](#comparison-label-harmonization)
       - [Venn Diagram Panels (Three-Way Intersection)](#venn-diagram-panels-three-way-intersection)
       - [Venn Panel Reference Table](#venn-panel-reference-table)
-  - [Functional Annotations](#functional-annotations-1)
+  - [Functional Evidences](#functional-evidences)
     - [Parsing TADB3 DIAMOND Results](#parsing-tadb3-diamond-results)
     - [Annotating Significant Genes with TADB3](#annotating-significant-genes-with-tadb3)
     - [Annotating Significant Genes with VFDB](#annotating-significant-genes-with-vfdb)
@@ -599,7 +599,7 @@ File Naming Convention:
 | I     | Caries-Baseline vs Caries-Fl, Caries-Baseline vs Caries-Fl-Ar, Caries-Fl vs Caries-Fl-Ar |
 | J     | Caries-Baseline vs Healthy-Baseline, Caries-Fl vs Healthy-Fl, Caries-Fl-Ar vs Healthy-Fl-Ar |
 
-## Functional Annotations
+## Functional Evidences
 
 ### Parsing TADB3 DIAMOND Results
 
