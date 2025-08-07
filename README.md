@@ -803,6 +803,8 @@ ta_systems_oral_mt/
 ├── LICENSE                  # License for usage
 └── ta_systems_oral_mt.Rproj # R project file for downstream analysis
 
+```
+
 ## Packages to install
 
 | Tool              | Version      | Install Command                                                                                           | Documentation Link                                                        |
@@ -822,10 +824,6 @@ ta_systems_oral_mt/
 | **OpenJDK**       | `11.0.25`    | `mamba install -c conda-forge openjdk=11.0.25`                                                            | [Documentation](https://openjdk.org/)                                      |
 | **InterProScan**  | `5.72-103.0` | `wget https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.72-103.0/interproscan-5.72-103.0-64-bit.tar.gz` | [Documentation](https://interproscan-docs.readthedocs.io/)            |
 | **git-lfs**       | `latest`     | `mamba install -c conda-forge git-lfs`                                                                    | [Documentation](https://git-lfs.com/)                                      |
-
-
-
-```
 
 ## Authors and Maintainers
 
